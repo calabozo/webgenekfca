@@ -1,0 +1,59 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<spring:url value="/resources/js/fcagraph/fcagraph_sparse_phis.js" var="fcagraph_url" />
+	<spring:url value="/resources/dijit/themes/tundra/images/tabClose.png" var="closeImg"/>
+	<spring:url value="/kfcaresultses/concept_range_maxplus/" var="maxplus_concept_range_url"/>
+	<spring:url value="/kfcaresultses/concept_range_minplus/" var="minplus_concept_range_url"/>
+			    
+    <script src="${fcagraph_url}" language="javascript" type="text/javascript" ><!-- required for FF3 and Opera --></script>        
+
+	<div id="div_detailed_info" style="width:100%;min-height:5000px;top:0px;left:0px;position:absolute;background-color:rgba(0, 0, 0, 0.9);z-index:256;" onclick="$('#div_detailed_info').hide();" >
+
+		<div id="object_detailed_info" style="width:80%;top:100px;left:100px;position: absolute;-webkit-border-radius: 15px;-moz-border-radius: 15px;border-radius: 15px;background-color:#FFF;">
+			<div id="close_div" style="float: right;cursor: pointer;margin-right: 4px;" onclick="$('#div_detailed_info').hide();" >
+			<img src="${closeImg}"/>
+			</div>
+			
+			<div style="margin-top:50px; margin-left:auto; margin-right: auto; width:750px; position: relative;">
+				<div id="g_fcamenus" style="top:0; left:0; position: absolute;" >
+					
+					<input type="button" id="g_butcenter" value="restore" style="width:60px;"/><br/>
+					<input type="button" id="g_butzoomin" value="+" style="width:20px;"/>
+					<input type="button" id="g_butzoomout" value="-" style="width:20px;"/>
+					<input type="button" id="g_savecanvas" value="s" style="width:20px;"/>
+					<p id="g_tooltip" style="top:0; left:0; position: absolute; background-color: #B9F2FF; padding: 2px 10px 2px 10px; border:1px solid green; opacity: 0.9; border-radius: 5px;  text-align:left; line-height:100%; visibility:hidden;">
+					<!-- required for FF3 and Opera -->	
+					</p>
+							
+				</div>
+				<canvas id="g_fcacanvas" style="background-color: #FFFFFF; width:750px;" >
+				<!-- required for FF3 and Opera -->
+				</canvas>
+			</div>
+			
+			
+		</div>
+	</div>
+
+    
+<script type="text/javascript">
+	$("#object_detailed_div").click(function(event){
+		  event.stopImmediatePropagation();
+	});
+	$("#div_detailed_info").hide();
+	function fetch_range_info(id,obj_name,max_min_plus){
+		var url;
+		if (max_min_plus){
+			url="${maxplus_concept_range_url}"+id+"/"+obj_name;
+		}else{
+			url="${minplus_concept_range_url}"+id+"/"+obj_name;
+		}
+		
+		$.getJSON(url,function(data){			
+			var json=data;
+			g_plotFCA(750,500,data);
+		
+		});	
+	};
+</script>
+</jsp:root>
+

@@ -1,0 +1,6 @@
+User-agent:*
+Disallow:/status
+Disallow:/images/
+Disallow:/login
+Disallow:/logout
+Disallow:/resources/

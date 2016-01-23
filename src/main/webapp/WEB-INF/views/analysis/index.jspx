@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" xmlns:c="http://java.sun.com/jsp/jstl/core"  xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:fn="http://java.sun.com/jsp/jstl/functions" version="2.0">
+  <util:load-jquery/>
+  <util:load-graphs/>
+  <spring:url value="/preprocessors/" var="show_preproccessor_url"/>
+  <spring:url value="/datamatrices/" var="show_datamatrix_url"/>
+  <spring:url value="/resources/styles/ui-lightness/jquery-ui-1.8.20.custom.css" var="ui_lightnes_url"/>
+  <spring:url value="/resources/js/jquery/jquery-ui-1.8.20.custom.min.js" var="progressbar_url"/>
+  <link href="${ui_lightnes_url}" rel="stylesheet" type="text/css"/>
+  <script language="javascript" src="${progressbar_url}" type="text/javascript">
+      <!-- required for FF3 and Opera -->
+  </script>
+    
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  <jsp:output omit-xml-declaration="yes"/>
+  <spring:message code="label_analysis_index" htmlEscape="false" var="title"/>
+  <div id="normal" style="width:95%;">
+        <h2>Explore <i>KFCA</i> concepts</h2>
+    <div>
+    <spring:message code="analysis_summary" htmlEscape="false" var="analysis_summary"/>
+    <spring:message code="analysis_sort_by" htmlEscape="false" var="analysis_sort_by"/>
+    <spring:message code="analysis_sort_by_phi" htmlEscape="false" var="analysis_sort_by_phi"/>
+    <spring:message code="analysis_sort_by_range" htmlEscape="false" var="analysis_sort_by_range"/>
+    <spring:url value="/genetool/" var="genetools_url"/>
+    
+    <c:if test="${!kfcaresults_.isGeneric}">
+     	<c:if test="${kfcaresults_.isGeneExpression}">
+    		<spring:message code="global_objtype_gene" var="objname" htmlEscape="false" />
+    	</c:if>
+    	<c:if test="${!kfcaresults_.isGeneExpression}">    	
+     		<spring:message code="global_objtype_probeset" var="objname" htmlEscape="false" />
+     	</c:if>
+    </c:if>
+    <c:if test="${kfcaresults_.isGeneric}">
+     <spring:message code="global_objtype_object" var="objname" htmlEscape="false" />
+    </c:if> 
+    
+    <div style="width:600px; margin: 0 auto;">
+    <p><b><spring:message code="label_es_uc3m_tsc_gene_datamatrix"/>: </b><a href="${show_datamatrix_url}${preprocessor.dataMatrix.id}">${preprocessor.dataMatrix.name}</a></p>
+    <p><b><spring:message code="label_es_uc3m_tsc_gene_preprocessor"/>: </b><a href="${show_preproccessor_url}${preprocessor.id}">${preprocessor.name}</a></p>
+    
+	    <p>
+	    From this view you can inspect the desired concept by choosing its attributes and see how the ${objname}s go in an out of the concept as the threshold value chosen at the exploration changes.   
+	    </p>    
+	    
+	    <!-- 
+	    <form:create id="fc_es_uc3m_tsc_gene_analyse" modelAttribute="kfcaresults_" multipart="true" path="/analysis" render="true">
+	    	<field:checkbox id="c_es_uc3m_tsc_gene_Preprocessor_preprocessorType" field="colNames" render="true"/>    
+	    </form:create>
+	     -->
+	     <div>
+	    
+	    First you should chose the domain of your analysis. If MaxPlus is selected the ${objname}s shown will be underexpressed,
+	    if MinPlus is selected you will see the overexpressed ${objname}s.<br/>    
+	            <input CHECKED="true" name="algebra" id="maxplus" type="radio" value="maxplus">MaxPlus</input>
+	            <input name="algebra" id="minplus" type="radio" value="minplus">MinPlus</input>
+	            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+	            <!-- 
+	            <input name="geneid" type="text" id="geneid"/>
+	            <button type="button" onclick="show_geneid()">Send</button>
+	             -->
+	     </div>
+	     <br/>
+	     These are the different attributes labels that a ${objname} can be associated with.
+	     A checked attribute means that the ${objname} has that attribute, and an unchecked means that it does not have the attribute for the threshold range.
+	    <br/>
+	    <!-- 
+	    <c:forEach items="${kfcaresults_.colNames }" var="colName">
+	        <input name="colName" class="colName" type="CHECKBOX" value="${colName}">${colName}</input>&#160;<br/>    
+	    </c:forEach>
+	     -->
+	     <table>	     
+	    <c:forEach begin="0" end="${(fn:length(kfcaresults_.colNames)-1)}" step="3" var="id" varStatus="status">
+	    	<tr>
+	    	<td>
+          	 <input name="colName" class="colName" type="CHECKBOX" value="${kfcaresults_.colNames[id]}">${kfcaresults_.colNames[id]}</input>&#160;<br/>
+          	</td>    
+          	<td>
+          	<c:if test="${fn:length(kfcaresults_.colNames)&gt;(id+1)}">
+          	<input name="colName" class="colName" type="CHECKBOX" value="${kfcaresults_.colNames[id+1]}">${kfcaresults_.colNames[id+1]}</input>&#160;<br/>
+          	</c:if>
+          	</td>
+          	<td>
+          	<c:if test="${fn:length(kfcaresults_.colNames)&gt;(id+2)}">
+          	<input name="colName" class="colName" type="CHECKBOX" value="${kfcaresults_.colNames[id+2]}">${kfcaresults_.colNames[id+2]}</input>&#160;<br/>
+          	</c:if>
+          	</td>
+          	</tr>
+        </c:forEach>      
+        </table>
+	    <br/>
+	    <br/>
+	    There are two different ways to sort the results.<br/> 
+	    By <em>First appeareance</em> means that the first gene shown will be the first which appears in the K-FCA exploration.<br/>
+	    By <em>Wider range</em> means that the first gene shown will be the one which appear over a wider threshold range in the K-FCA exploration.
+	    <br/>
+	    <br/>
+	    ${analysis_sort_by}:
+	    <select id="sorted_by">
+	    	<option value="0">${analysis_sort_by_phi}</option>
+	    	<option value="1">${analysis_sort_by_range}</option>					
+		</select>
+	    
+    
+    </div>
+    <br/>
+    Once you have selected your query, please click on <em>Send</em>.
+    <br/>
+    <button type="button" onclick="send_data()">Send</button>
+    <span id="csv_download_id" style="margin-left: 3em;">	            
+		<a href="">Download</a>
+	</span>
+    <br/>
+    <hr />
+    <div id="info_canvas_div">
+	    <div id="hd_div">
+	    	The <em>homogeneity</em> shows the average distance of an element from the selected cluster to other elements in the same cluster. 
+	    	A lower homogeneity is a sign of a better cluster quality.<br/>
+	    	The <em>separation</em> shows the average distance of an element from the selected cluster to other elements in different clusters.
+	    	A higher separation indicates that the selected cluster is more different than the other clusters.<br/>
+	    	The distance is both cases is calculated based on the Euclidean distance.<br/>
+	    	The <em>H/S</em> quotient is the result of dividing the homogeneity by the separation. The lower this value, the better.<br/> 
+	    	<div id="message_info">                    
+                Calculating cluster homogeneity and separation.                  
+            </div> 
+	    	<div id="progressbar" style="width: 200px; height: 10px;">
+                <!-- Nanan -->
+            </div>
+            <div id="hsgraph_div">
+                <div id="placeholder" style="width:400px;height:300px;" version="2.0">
+                    <!-- required for FF3 and Opera -->
+                </div>
+                <div id="hsplaceholder" style="width:400px;height:300px;float:right;margin-top:-300px" version="2.0">
+                    <!-- required for FF3 and Opera -->
+                </div>
+                <a href="javascript:downloadHS();" style="margin: 0.7em 0 1.2em 2em;">Download</a>
+            </div>
+            <br/>            
+	    </div>
+	    <span id="desc_canvas_span">
+	    Please wait...
+	    </span>
+	    <br/>
+	    <span id="desc2_canvas_span">
+	    The black stripe indicates the range for which the ${objname} has the selected attributes.<br/> 
+	    Click on a ${objname} to see more details.
+	    </span> 
+		<br/>
+		<br/>
+	    <canvas id="gene_canvas">
+	    <!--  ...  -->
+	    </canvas>
+	    
+	    <p id="tooltip" style="top:0; left:0; position: absolute; background-color: #A9E2F3; padding: 2px 10px 2px 10px; border:1px solid green; opacity: 0.8; border-radius: 5px;  text-align:center; visibility:hidden;">
+	    <!--  ...  -->
+	    </p>
+	    
+		<div >
+			<c:if test="${!kfcaresults_.isGeneric}">
+                <util:show-geneinfo/>
+            </c:if>
+            <c:if test="${kfcaresults_.isGeneric}">
+                <util:show-objectinfo/>
+            </c:if>
+	    </div>
+    </div>
+	<spring:url value="get_info/${kfcaresults_.id }" var="url_info"/>
+	<spring:url value="get_homsep/" var="url_homsep"/>
+<script type="text/javascript"> 
+//<![CDATA[    
+    
+var maxGenes=1000;
+var max_min_plus;
+var sorted_by_str;
+var hsId;
+
+$("#csv_download_id").hide();
+$("#info_canvas_div").hide();
+$("#desc2_canvas_span").hide();
+$("#hd_div").hide();
+$("#hsgraph_div").hide();
+
+
+function send_data(){
+	var cols=$(".colName");
+	var txtCols="cols="+cols[0].checked;
+	max_min_plus=$('#maxplus').attr("checked");//=="checked";
+	if (max_min_plus!=true || max_min_plus!=false) 
+		max_min_plus=(max_min_plus=="checked");
+	
+	sorted_by_str=$("#sorted_by option:selected").text();
+	var i=1;
+	for (;i<cols.length;i++){
+		txtCols+=","+cols[i].checked;
+	}
+	
+	
+	var url="${url_info}?"+txtCols+"&max_min_plus="+max_min_plus+"&sorted_by="+$("#sorted_by").val();
+	$("#csv_download_id").find("a").attr("href", url+"&json_csv_format=false");
+	$("#csv_download_id").show();
+	$("#info_canvas_div").show();
+	
+	$.getJSON(url+"&json_csv_format=true&max_genes="+maxGenes,process_json);		
+    
+}           
+
+function process_json(json_data){
+		
+	var genes=json_data.genes;
+	var canvas=document.getElementById("gene_canvas");
+	var numGenes=maxGenes;
+	if (genes.length<numGenes) numGenes=genes.length;
+	var lw=12;
+	var offset=2;
+	var W=1000;	
+	canvas.width=W;
+	canvas.height=numGenes*lw+50;
+	var ctx = canvas.getContext('2d');
+	
+	if (numGenes<=0){
+		$("#desc_canvas_span").html("That cluster does not exist. No genes found with that criteria.");
+		$("#desc2_canvas_span").hide();
+		return;
+	}
+	
+	var i=0;
+	var y=0;
+		
+	var xf=W;
+	var xo=150;
+	var p=(xf-xo)/(json_data.maxPhi-json_data.minPhi);
+	var b=xo-json_data.minPhi*p;
+	
+	var marker;
+	ctx.lineWidth = 2;
+	ctx.strokeStyle="#00A0F0";
+	
+	if (max_min_plus){
+		max_min_plus_str="φ";
+		from_phi=json_data.minPhi.toFixed(4);
+		to_phi=json_data.maxPhi;
+	}else{
+		max_min_plus_str="Φ";
+		to_phi=json_data.minPhi;
+		from_phi=json_data.maxPhi.toFixed(4);
+	}
+	
+	ctx.fillText("Threshold "+max_min_plus_str, xo-90, 10);
+	$("#desc_canvas_span").html("The next graph shows "+numGenes+" ${objname}s sorted by <em>"+sorted_by_str+"</em> when the "+max_min_plus_str+" threshold value goes from <em>"+from_phi+"</em> to <em>"+to_phi+"</em>.");
+	$("#desc2_canvas_span").show();
+	
+	for (marker=json_data.minPhi;marker<=json_data.maxPhi;marker+=(json_data.maxPhi-json_data.minPhi)/4){		
+		ctx.moveTo(p*marker+b-1,5);
+    	ctx.lineTo(p*marker+b-1,canvas.height);    	
+    	ctx.stroke();
+    	ctx.fillText(marker.toFixed(2), p*marker+b-26, 10);
+	}
+	
+	ctx.lineWidth = 8;
+	ctx.strokeStyle="#102010";
+	for (;i<numGenes;i++){
+		var gen=genes[i];
+		y=(i+offset)*lw;
+		ctx.fillText(gen.id, 5, y);		
+		ctx.beginPath();
+		
+    	ctx.moveTo(p*gen.p[0]+b,y);
+    	ctx.lineTo(p*gen.p[1]+b,y);    	
+    	ctx.stroke();
+	}
+	
+	canvas.onmousemove = function(event){
+		var tooltip=document.getElementById('tooltip');								
+		var indx=Math.round(event.offsetY/lw)-offset;
+		if (indx>=0){		
+			tooltip.style.visibility='visible';
+			var gen=genes[indx];
+			if (json_data.minPhi<0){
+				label="<br/>&phi;<sub>0</sub>="+gen.p[0]+"<br/>&phi;<sub>f</sub>="+gen.p[1]+"<br/>&Delta;&phi;="+gen.d;
+			}else{
+				label="<br/>&Phi;<sub>0</sub>="+gen.p[0]+"<br/>&Phi;<sub>f</sub>="+gen.p[1]+"<br/>&Delta;&Phi;="+gen.d;				
+			}
+		
+			tooltip.innerHTML=gen.id+label;		
+			
+			tooltip.style.top=event.pageY+"px";		
+			tooltip.style.left=event.pageX+"px";
+		}else{
+			tooltip.style.visibility='hidden';
+		}
+	};
+	
+	canvas.onmouseout = function(event){
+		var tooltip=document.getElementById('tooltip');
+		tooltip.style.visibility='hidden';								
+	};
+	
+	
+	canvas.onclick=function(event){
+		var indx=Math.round(event.offsetY/lw)-offset;
+		var gen=genes[indx];
+		max_min_plus=$('#maxplus').attr("checked")=="checked";
+		show_gene_info(gen.id)
+	}
+	
+	//HomogeneitySeparation
+	hsId=json_data.hsId;
+	if (hsId>=0){
+		checkHomogeneitySeparationStatus();
+		$("#hd_div").show();
+		$("#progressbar").progressbar({value: 0});	
+		$("#progressbar").show();
+		$("#message_info").show();
+		$("#hsgraph_div").hide();
+	    $(".ui-progressbar-value").css("background-image","url(${progressbar_img}/pbar-ani.gif)");
+	}
+}
+
+function show_geneid(){
+	var geneid=document.getElementById('geneid').value;
+	max_min_plus=$('#maxplus').attr("checked")=="checked";
+	show_gene_info(geneid);
+}
+
+function show_gene_info(gene){
+	var tooltip=document.getElementById('tooltip');
+	tooltip.style.visibility='hidden';	
+	
+	fetch_range_info(${kfcaresults_.id },gene, max_min_plus);
+	$('html, body').animate({ scrollTop: 0 }, 'fast');
+	
+	$("#div_detailed_info").show(1000);			
+	var url="${genetools_url}"+"/geneinfo/"+"${kfcaresults_.microArrayType}"+"/"+gene;
+	
+	$.getJSON(url,function(data){
+		
+		function getGoTable(jsonGO){
+			if (jsonGO==null) return "";
+			
+			$("#geneinfo_div").show();
+			
+			var outHTML="<table class='tableGO'>";
+			outHTML+="<tr><th>Accession</th><th>Definition</th></tr>";
+			
+			var i;
+			for (i=0;i<jsonGO.length;i++){
+				outHTML+="<tr>";
+				var goid="GO:"+jsonGO[i].goID;
+				outHTML+="<td><a href='http://amigo.geneontology.org/cgi-bin/amigo/term_details?term="+goid+"' target='_blank'>"+goid+"</td>";
+				outHTML+="<td>"+jsonGO[i].description+"</td>";				
+				outHTML+="</tr>";
+			}
+			
+			outHTML+="</table>";
+			return outHTML;
+		}
+		
+		function getAGIHtml(jsonAGI){
+			if (jsonAGI==null) return "";
+			
+			var url="http://www.arabidopsis.org/servlets/Search?type=general&search_action=detail&method=1&show_obsolete=F&sub_type=gene&SEARCH_EXACT=4&SEARCH_CONTAINS=1&name=";
+			
+			var agiName=jsonAGI[0];
+			var agiURL=url+agiName;
+			var outHTML="<a href='"+agiURL+"' target=_blank'>"+agiName+"</a>";
+			var i;
+			for (i=1;i<jsonAGI.length;i++){
+				agiName=jsonAGI[i];
+				agiURL=url+agiName;
+				outHTML+=",&nbsp;<a href='"+agiURL+"' target=_blank'>"+agiName+"</a>";
+			}
+			return outHTML;
+		}
+		
+		
+		
+		$("#probe_set_id").text(data.probeSetID);
+        $("#gene_chip_array_id").text(data.geneChipArray);
+        $("#species_scientific_name_id").text(data.speciesScientificName);
+        $("#annotation_date_id").text(data.annotationDate);
+        $("#sequence_type_id").text(data.sequenceType);
+        $("#sequence_source_id").text(data.sequenceSource);
+        $("#transcript_id").text(data.transcriptID);
+        $("#target_description_id").text(data.description);
+        $("#representative_public_id").text(data.representativePublicID);
+        $("#archival_unigene_cluster_id").text(data.archivalUnigeneCluster);
+        $("#unigene_id").text(data.uniGeneID);
+        $("#genome_version_id").text(data.genomeVersion);
+        $("#alignments_id").text(data.alignments);
+        $("#gene_title_id").text(data.geneTitle);
+        $("#gene_symbol_id").text(data.geneSymbol);
+        $("#chromosomal_location_id").text(data.chromosomalLocation);
+        $("#unigene_cluster_id").text(data.uniGeneClusterType);
+        $("#ensembl_id").text(data.ensembl);
+        $("#entrez_gene_id").text(data.entrezGene);
+        $("#swissprot_id").text(data.swissprot);
+        $("#ec_id").text(data.EC);
+        $("#omim_id").text(data.OMIM);
+        $("#refseq_protein_id").text(data.refSeqProteinID);
+        $("#refseq_transcript_id").text(data.refSeqTranscriptID);
+        $("#flybase_id").text(data.flybase);
+        $("#agi_id").html(getAGIHtml(data.agiName));
+        $("#genesymbol_id").text(data.geneSymbol);      
+        $("#wormbase_id").text(data.wormBase);
+        $("#mgi_name_id").text(data.MGIName);
+        $("#rgd_name_id").text(data.RGDName);
+        $("#sgd_accesion_number_id").text(data.SGDAccesionNumber);
+        $("#go_bp_id").html(getGoTable(data.goBP));
+        $("#go_cc_id").html(getGoTable(data.goCC));
+        $("#go_mf_id").html(getGoTable(data.goMF));
+        $("#pathway_id").text(data.pathway);
+        $("#interpro_id").text(data.interPro);
+        $("#trans_membrane_id").text(data.transMembrane);
+        $("#qtl_id").text(data.QTL);
+        $("#annotation_description_id").text(data.annotationDescription);
+        $("#annotation_transcript_id").text(data.annotationTranscriptCluster);
+	});
+	
+}
+
+var csvHSDownload;
+
+function checkHomogeneitySeparationStatus(){
+	  $.get("${url_homsep}"+hsId,function(txt){
+		  var obj = jQuery.parseJSON(txt);
+		  $("#progressbar").progressbar({value: obj.ratio});
+		  
+		  if (obj.status=="done"){
+			  //window.location.href="${show_preprocessor}"+hsId;
+			  $("#progressbar").hide();
+			  $("#message_info").hide();
+			  $("#hsgraph_div").show();
+			  
+			  var homogeneity= new Array();
+			  var separation= new Array();
+			  var hovers= new Array();
+			  var hs=obj.hs;
+			  var hsi;
+			  csvHSDownload= "data:text/csv;charset=utf-8,";
+			  
+			  for (var i=0;i<hs.length;i++){
+				  hsi=hs[i];
+				  if (hsi!=null){
+					  if (hsi.h>0) homogeneity.push([hsi.p,hsi.h]);
+					  if (hsi.s>0) separation.push([hsi.p,hsi.s]);
+					  if (hsi.s>0 && hsi.h>0) hovers.push([hsi.p,hsi.h/hsi.s]);
+					  
+					  csvHSDownload+=hsi.p+","+hsi.h+","+hsi.s+"\n";
+				  }
+			  }
+			  
+			  $.plot($("#placeholder"), 
+						//[ {label: "Min Plus", data: minPlus, points: {show: true}}
+						  [ {label: "Homogeneity", data: homogeneity, color:'#1010A0'},//rgb(175,216,248)
+						   {label: "Separation", data: separation, yaxis:2, color:'#A05020', dashes: { show: true }}],//rgb(237,194,64)						   
+						{
+						legend:{
+						 position: "nw"
+						},
+					  	xaxis: { 			    			   
+						    ticks:15,
+						    labelAngle: 45
+						},
+						yaxes: [{min:0,color:'#1010A0'},{position: 1, color:'#A05020'}]
+						});
+
+			  $.plot($("#hsplaceholder"), 
+						//[ {label: "Min Plus", data: minPlus, points: {show: true}},
+						  [ {label: "H/S", data: homogeneity}],						   
+						{
+						legend:{
+						 position: "nw"
+						},
+					  	xaxis: { 			    			   
+						    ticks:15,
+						    rotatedTicks: 135
+						},
+						yaxes: [{min:0}]
+						});
+			  
+		  }else if (obj.status==-1){
+			  $("#progressbar").hide();
+			  $("#message_info").html("There was an error while processing input files.<br/>The files were corrupt or may be you choose a wrong microarray type.");
+		  }else{
+			  setTimeout("checkHomogeneitySeparationStatus()",1000);
+		  }
+	  });
+	  
+	  
+}
+
+function downloadHS(){
+	var encodedUri = encodeURI(csvHSDownload);
+	window.open(encodedUri);
+}
+
+// ]]>
+</script>
+<style type="text/css">
+	div.xAxis div.tickLabel{
+	margin-top:0.7em;
+	transform: rotate(-45deg);
+    -ms-transform:rotate(-45deg); /* IE 9 */
+    -moz-transform:rotate(-45deg); /* Firefox */
+    -webkit-transform:rotate(-45deg); /* Safari and Chrome */
+    -o-transform:rotate(-45deg); /* Opera */
+    /*rotation-point:50% 50%;*/ /* CSS3 */
+    /*rotation:45deg;*/ /* CSS3 */
+	}
+	div.flot-y2-axis div.tickLabel{
+	font-weight:bold;
+	color: #A05020;
+	}
+	#placeholder div.flot-y1-axis div.tickLabel{
+	font-weight:bold;
+	color: #1010A0;
+	}
+</style>
+    </div>
+  </div>
+</div>

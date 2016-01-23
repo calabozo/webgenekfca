@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
+    <util:load-graphs/>
+    <util:load-maths/>
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_es_uc3m_tsc_kfcatools_KFCAResults" object="${kfcaresults_}" path="/kfcaresultses" z="user-managed">
+        <field:display date="true" dateTimePattern="${KFCAResults_startdate_date_format}" field="startDate" id="s_es_uc3m_tsc_kfcatools_KFCAResults_startDate" object="${kfcaresults_}" render="false" z="user-managed"/>
+        <field:display date="true" dateTimePattern="${KFCAResults_stopdate_date_format}" field="stopDate" id="s_es_uc3m_tsc_kfcatools_KFCAResults_stopDate" object="${kfcaresults_}" render="false" z="user-managed"/>
+        <field:display field="preprocessor" id="s_es_uc3m_tsc_kfcatools_KFCAResults_preprocessor" object="${kfcaresults_}" render="false" z="user-managed"/>
+        <field:display field="dataMatrix" id="s_es_uc3m_tsc_kfcatools_KFCAResults_dataMatrix" object="${kfcaresults_}" render="false" z="user-managed"/>
+        <field:display field="minPlusPhis" id="s_es_uc3m_tsc_kfcatools_KFCAResults_minPlusPhis" object="${kfcaresults}" render="false" z="user-managed"/>
+        <field:display field="minPlusNumConcepts" id="s_es_uc3m_tsc_kfcatools_KFCAResults_minPlusNumConcepts" object="${kfcaresults}" render="false" z="user-managed"/>
+        <field:display field="maxPlusPhis" id="s_es_uc3m_tsc_kfcatools_KFCAResults_maxPlusPhis" object="${kfcaresults}" render="false" z="user-managed"/>
+        <field:display field="maxPlusNumConcepts" id="s_es_uc3m_tsc_kfcatools_KFCAResults_maxPlusNumConcepts" object="${kfcaresults}" render="false" z="user-managed"/>
+        <field:display field="processedMatrix" id="s_es_uc3m_tsc_kfcatools_KFCAResults_processedMatrix" object="${kfcaresults}" render="false" z="user-managed"/>
+        <div>
+            <span>
+                <b>
+                    <spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_startdate"/>: </b>
+            </span>
+            <span>${kfcaresults_.startDate}</span>
+		    
+		<span>
+                <b>
+                    <spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_stopdate"/>: </b>
+            </span>
+            <span>${kfcaresults_.stopDate}</span>
+        </div>
+        <b>
+            <spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_numconcepts"/>:</b>
+        <div id="placeholder" style="width:600px;height:300px;" version="2.0">
+            <!-- required for FF3 and Opera -->
+        </div>
+        
+        
+        <br/>
+        <br/>
+        <div>
+        	<input type="radio" name="algebra" value="maxplus" onclick="max_plus_show();redrawPhi();" CHECKED="true">MaxPlus</input>
+			<input type="radio" name="algebra" value="minplus" onclick="min_plus_show();redrawPhi();">MinPlus</input>
+        </div>
+        
+        <div id="max_min_plus_div_id">
+	        <div>
+	        	<span id="max_min_plus_def">
+	            <b>MaxPlus</b> (<spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_desc_maxplus"/>)
+	            </span>
+	    	<hr/>
+	        </div>
+	        
+	        
+	        <table class="simpletable">
+	        <tr>
+	        <td>
+	        <div style="height:50px;overflow:auto;"><br/><span>$$\phi$$ values</span></div>
+	        <select id="max_min_plus_phis" onchange="change_max_min_plus_phi()" size="20">
+	        </select>
+	        </td>
+	        <td>
+	        	<div style="height:50px;overflow:auto;">
+	        	<spring:url value="matrix_maxplus/${kfcaresults_.id }" var="download_url"/>        		        
+	        	<br/><span>$$\phi$$</span>
+	        	<span id="matrix_download_id">
+	        	&#160;&#160;&#160; 
+	        	<a alt="textoAlt" href="${download_url}" title="Titulo">
+		    	Download
+				</a></span>
+				</div>
+		        <select id="max_min_plus_attributes" size="20" onchange="change_max_min_plus_attribute()" style="width: 400px;overflow:auto;">
+		            <!-- comment -->
+		        </select>	        
+	        </td>
+	        <td>
+	        	<div id="max_min_plus_attribute_id" style="height:50px;overflow:auto;"><br/></div>	        
+		        <select id="max_min_plus_objects" size="20" onchange="change_gene()" style="width: 200px;overflow:auto;">
+		            <!-- comment -->
+		        </select>	        
+	        </td>
+	        </tr>        
+	        </table>
+	        	        
+        </div> <!--End of Max Plus div -->
+        
+	        
+	   	<table>
+	        	<tr><td>Probe Set ID</td><td><div id="probe_set_id"><!--  --></div></td></tr>				
+				<tr><td>Transcript ID(Array Design)</td><td><div id="transcript_id"><!--  --></div></td></tr>
+				<tr><td>Gene Title</td><td><div id="gene_title_id"><!--  --></div></td></tr>
+				<tr><td>Target Description</td><td><div id="target_description_id"><!--  --></div></td></tr>
+				<tr><td>AGI</td><td><div id="agi_id"><!--  --></div></td></tr>
+				<tr><td>QTL</td><td><div id="qtl_id"><!--  --></div></td></tr>
+				
+				<tr><td>GeneChip Array</td><td><div id="gene_chip_array_id"><!--  --></div></td></tr>
+				<tr><td>Species Scientific Name</td><td><div id="species_scientific_name_id"><!--  --></div></td></tr>
+				<tr><td>Annotation Date</td><td><div id="annotation_date_id"><!--  --></div></td></tr>
+				<tr><td>Sequence Type</td><td><div id="sequence_type_id"><!--  --></div></td></tr>
+				<tr><td>Sequence Source</td><td><div id="sequence_source_id"><!--  --></div></td></tr>
+				<tr><td>Representative Public ID</td><td><div id="representative_public_id"><!--  --></div></td></tr>
+				<tr><td>Archival UniGene Cluster</td><td><div id="archival_unigene_cluster_id"><!--  --></div></td></tr>
+				<tr><td>UniGene ID</td><td><div id="unigene_id"><!--  --></div></td></tr>
+				<tr><td>Genome Version</td><td><div id="genome_version_id"><!--  --></div></td></tr>
+				<tr><td>Alignments</td><td><div id="alignments_id"><!--  --></div></td></tr>
+				<tr><td>Gene Symbol</td><td><div id="gene_symbol_id"><!--  --></div></td></tr>
+				<tr><td>Chromosomal Location</td><td><div id="chromosomal_location_id"><!--  --></div></td></tr>
+				<tr><td>Unigene Cluster Type</td><td><div id="unigene_cluster_id"><!--  --></div></td></tr>
+				<tr><td>Ensembl</td><td><div id="ensembl_id"><!--  --></div></td></tr>
+				<tr><td>Entrez Gene</td><td><div id="entrez_gene_id"><!--  --></div></td></tr>
+				<tr><td>SwissProt</td><td><div id="swissprot_id"><!--  --></div></td></tr>
+				<tr><td>EC</td><td><div id="ec_id"><!--  --></div></td></tr>
+				<tr><td>OMIM</td><td><div id="omim_id"><!--  --></div></td></tr>
+				<tr><td>RefSeq Protein ID</td><td><div id="refseq_protein_id"><!--  --></div></td></tr>
+				<tr><td>RefSeq Transcript ID</td><td><div id="refseq_transcript_id"><!--  --></div></td></tr>
+				<tr><td>FlyBase</td><td><div id="flybase_id"><!--  --></div></td></tr>
+				<tr><td>WormBase</td><td><div id="wormbase_id"><!--  --></div></td></tr>
+				<tr><td>MGI Name</td><td><div id="mgi_name_id"><!--  --></div></td></tr>
+				<tr><td>RGD Name</td><td><div id="rgd_name_id"><!--  --></div></td></tr>				
+				<tr><td>SGD accession number</td><td><div id="sgd_accesion_number_id"><!--  --></div></td></tr>
+				<tr><td>Gene Ontology Biological Process</td><td><div id="go_bp_id"><!--  --></div></td></tr>
+				<tr><td>Gene Ontology Cellular Component</td><td><div id="go_cc_id"><!--  --></div></td></tr>
+				<tr><td>Gene Ontology Molecular Function</td><td><div id="go_mf_id"><!--  --></div></td></tr>
+				<tr><td>Pathway</td><td><div id="pathway_id"><!--  --></div></td></tr>
+				<tr><td>InterPro</td><td><div id="interpro_id"><!--  --></div></td></tr>
+				<tr><td>Trans Membrane</td><td><div id="trans_membrane_id"><!--  --></div></td></tr>
+				<tr><td>Annotation Description</td><td><div id="annotation_description_id"><!--  --></div></td></tr>
+				<tr><td>Annotation Transcript Cluster</td><td><div id="annotation_transcript_id"><!--  --></div></td></tr>								    
+		    </table>    
+	        
+        <field:display field="colNames" id="s_es_uc3m_tsc_kfcatools_KFCAResults_colNames" object="${kfcaresults}" render="false" z="user-managed"/>
+        <field:display field="rowNames" id="s_es_uc3m_tsc_kfcatools_KFCAResults_rowNames" object="${kfcaresults}" render="false" z="user-managed"/>
+        <field:display field="microArrayType" id="s_es_uc3m_tsc_kfcatools_KFCAResults_microArrayType" object="${kfcaresults}" render="false" z="user-managed"/>
+
+    </page:show>
+    
+    <spring:url value="/kfcaresultses/concepts_maxplus/${kfcaresults_.id }" var="maxplus_url"/>
+    <spring:url value="/kfcaresultses/concepts_maxplus_attr/${kfcaresults_.id }" var="maxplus_attr_url"/>
+    <spring:url value="/kfcaresultses/concepts_minplus/${kfcaresults_.id }" var="minplus_url"/>
+    <spring:url value="/kfcaresultses/concepts_minplus_attr/${kfcaresults_.id }" var="minplus_attr_url"/>    
+    <spring:url value="/genetool/" var="genetools_url"/>    
+    <script type="text/javascript">
+
+var minPlus = [];
+var maxPlus = [];
+
+var vFunc=new Array(3);
+var phi="";
+var attrid="";
+var attrName="";
+var url_phi="";
+var eq_phi_varphi="";
+
+$(document).ready(function() {
+	max_plus_show();
+});            
+
+function max_plus_show(){
+	url_phi="${maxplus_url}/";
+	$("#max_min_plus_phis").find('option').remove();
+	$("#max_min_plus_attributes").find('option').remove();
+	$("#max_min_plus_objects").find('option').remove();
+	
+	<c:forEach items="${kfcaresults_.maxPlusNumConcepts}" var="val">
+	$("#max_min_plus_phis").append(new Option("${val[0]}","${val[0]}"));
+	</c:forEach>
+	
+	eq_phi_varphi='\\phi';
+	
+	$("#max_min_plus_def").html('<b>MaxPlus</b> (<spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_desc_maxplus"/>)');
+    
+}
+function min_plus_show(){
+	url_phi="${minplus_url}/";	
+	$("#max_min_plus_phis").find('option').remove();
+	$("#max_min_plus_attributes").find('option').remove();
+	$("#max_min_plus_objects").find('option').remove();
+	
+	<c:forEach items="${kfcaresults_.minPlusNumConcepts}" var="val">
+	$("#max_min_plus_phis").append(new Option("${val[0]}","${val[0]}"));
+	</c:forEach>
+	
+	eq_phi_varphi='\\varphi';
+	$("#max_min_plus_def").html('<b>MinPlus</b> (<spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_desc_minplus"/>)');
+	
+}   
+function redrawPhi(){
+	var eqLabel = MathJax.Hub.getAllJax("equation")[0];
+	MathJax.Hub.Queue(["Text",eqLabel,eq_phi_varphi]);
+	eqLabel = MathJax.Hub.getAllJax("equation")[1];
+	MathJax.Hub.Queue(["Text",eqLabel,eq_phi_varphi]);
+}
+
+//<![CDATA[
+
+function change_max_min_plus_phi(){		
+	$("#max_min_plus_phis option:selected").each(function () {
+        phi = $(this).attr('value');
+      });
+	var url=url_phi+phi;
+	$.getJSON(url,function(data){
+		$("#max_min_plus_attributes").find('option').remove();		
+		data.intents.forEach(function(intent){
+			var intentTxt="";
+			intent.m.forEach(function(attrTxt){
+				if (intentTxt==""){
+					intentTxt=attrTxt;	
+				}else{
+					intentTxt=intentTxt+","+attrTxt;
+				}
+			})
+			if (intentTxt==""){
+				intentTxt="empty";
+			}
+			var opt=new Option(intentTxt,intent.id);
+			opt.title=intentTxt;
+			
+			$("#max_min_plus_attributes").append(opt); 
+		});
+	})
+	
+	var eqLabel = MathJax.Hub.getAllJax("equation")[1];
+	MathJax.Hub.Queue(["Text",eqLabel,eq_phi_varphi+'='+(phi*1).toPrecision(7)]);
+	$("#matrix_download_id").find("a").attr("href", '${download_url}/'+phi)
+	$("#matrix_download_id").show();
+	
+	
+}
+function change_max_min_plus_attribute(){
+	
+	$("#max_min_plus_attributes option:selected").each(function () {		
+		attrid = $(this).attr('value')
+		tmp_attrName = $(this).text().split(',');
+		attrName="";
+		tmp_attrName.forEach(function(name){			
+			attrName=attrName+name+"<br/>";
+		})
+      });
+	var url="${maxplus_url}"+"/"+phi+"/"+attrid;
+	$.getJSON(url,function(data){
+		$("#max_min_plus_objects").find('option').remove();
+
+		data.o.forEach(function(objTxt){
+			
+			var opt=new Option(objTxt,objTxt);
+			opt.title=objTxt;
+			$("#max_min_plus_objects").append(opt); 
+		});				
+	});
+	$("#max_min_plus_attribute_id").html(attrName);
+}
+function change_gene(){
+	var gene;
+	$("#max_min_plus_objects option:selected").each(function () {
+        gene = $(this).attr('value');
+      });
+	var url="${genetools_url}"+"/geneinfo/"+gene;
+	$.getJSON(url,function(data){
+		$("#probe_set_id").text(data.probeSetID);
+        $("#gene_chip_array_id").text(data.geneChipArray);
+        $("#species_scientific_name_id").text(data.speciesScientificName);
+        $("#annotation_date_id").text(data.annotationDate);
+        $("#sequence_type_id").text(data.sequenceType);
+        $("#sequence_source_id").text(data.sequenceSource);
+        $("#transcript_id").text(data.transcriptID);
+        $("#target_description_id").text(data.description);
+        $("#representative_public_id").text(data.representativePublicID);
+        $("#archival_unigene_cluster_id").text(data.archivalUnigeneCluster);
+        $("#unigene_id").text(data.uniGeneID);
+        $("#genome_version_id").text(data.genomeVersion);
+        $("#alignments_id").text(data.alignments);
+        $("#gene_title_id").text(data.geneTitle);
+        $("#gene_symbol_id").text(data.geneSymbol);
+        $("#chromosomal_location_id").text(data.chromosomalLocation);
+        $("#unigene_cluster_id").text(data.uniGeneClusterType);
+        $("#ensembl_id").text(data.ensembl);
+        $("#entrez_gene_id").text(data.entrezGene);
+        $("#swissprot_id").text(data.swissprot);
+        $("#ec_id").text(data.EC);
+        $("#omim_id").text(data.OMIM);
+        $("#refseq_protein_id").text(data.refSeqProteinID);
+        $("#refseq_transcript_id").text(data.refSeqTranscriptID);
+        $("#flybase_id").text(data.flybase);
+        $("#agi_id").text(data.agiName);
+        $("#wormbase_id").text(data.wormBase);
+        $("#mgi_name_id").text(data.MGIName);
+        $("#rgd_name_id").text(data.RGDName);
+        $("#sgd_accesion_number_id").text(data.SGDAccesionNumber);
+        $("#go_bp_id").text("");
+        $("#go_cc_id").text("");
+        $("#go_mf_id").text("");
+        $("#pathway_id").text(data.pathway);
+        $("#interpro_id").text(data.interPro);
+        $("#trans_membrane_id").text(data.transMembrane);
+        $("#qtl_id").text(data.QTL);
+        $("#annotation_description_id").text(data.annotationDescription);
+        $("#annotation_transcript_id").text(data.annotationTranscriptCluster);
+	});
+	
+}
+
+function change_min_plus_varphi(){
+	alert("Minplus change")
+}
+
+$(function () {
+     
+// ]]>
+    <c:forEach items="${kfcaresults_.minPlusNumConcepts}" var="val">
+    	minPlus.push([${val[0]},${val[1]}]);
+	</c:forEach>
+        <c:forEach items="${kfcaresults_.maxPlusNumConcepts}" var="val">
+		maxPlus.push([${val[0]},${val[1]}]);
+	</c:forEach>	
+	
+	$.plot($("#placeholder"), 
+			[ {label: "Min Plus", data: minPlus, points: {show: true}},
+			  {label: "Max Plus", data: maxPlus} ],
+			{
+		  	xaxis: { 			    			   
+			    ticks:7
+			  }
+			});
+});
+
+ 
+ </script>
+</div>

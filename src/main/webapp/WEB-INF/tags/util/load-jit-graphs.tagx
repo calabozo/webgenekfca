@@ -1,0 +1,6 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<spring:url value="/resources/js/jit/jit.js" var="jit_url" />	
+    <spring:url value="/resources/js/jit/forcedirected.js" var="forcedirected_url" />	
+    <script src="${jit_url}" language="javascript" type="text/javascript" ><!-- required for FF3 and Opera --></script>    
+    <script src="${forcedirected_url}" language="javascript" type="text/javascript" ><!-- required for FF3 and Opera --></script>
+</jsp:root>

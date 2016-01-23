@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:create id="fc_es_uc3m_tsc_kfcatools_KFCAResults" modelAttribute="KFCAResults_" path="/kfcaresultses" render="${empty dependencies}" z="user-managed"/>
+    <form:create id="fc_es_uc3m_tsc_kfca_explore_KFCAResults" modelAttribute="KFCAResults_" path="/kfcaresultses" render="${empty dependencies}" z="xwHxAsxbrTEsGVl73PTR4w44ki0=">
+        <field:datetime dateTimePattern="${KFCAResults__startdate_date_format}" field="startDate" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_startDate" required="true" z="87FHOLAI7gTIJLy5bWwaF/dLx/o="/>
+        <field:datetime dateTimePattern="${KFCAResults__stopdate_date_format}" field="stopDate" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_stopDate" required="true" z="CMYZfOpHpBAmfUGZE9la8yPjc0g="/>
+        <field:textarea field="processedMatrix" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_processedMatrix" z="Hf7n/sm9+JoHQdYVlcaM7VQBpps="/>
+        <field:textarea field="minPlusNumConcepts" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_minPlusNumConcepts" z="knVU5YQ5/Zi+MYkiB2OBzK54NUc="/>
+        <field:textarea field="maxPlusNumConcepts" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_maxPlusNumConcepts" z="ZDRIaGN9tWfylQSyNjaAJrVEhNw="/>
+        <field:input field="colNames" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_colNames" z="IX3XuYPXlygluLBV6EJNvxq9Lpc="/>
+        <field:input field="rowNames" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_rowNames" z="o7BCf9hqQfmGdvbkehJUN/3hmH0="/>
+        <field:select field="microArrayType" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_microArrayType" items="${datatypeenums}" path="datatypeenums" z="LndO9ZVZB8t2LyOWOpChofJ3iRE="/>
+        <field:input field="objectExplored" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_objectExplored" z="3cHA5yr4ZUVS7jX/OCnAA5wGo/o="/>
+        <field:input field="logger" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_logger" z="erLfOu6atd9q+nDPAHLZmwdE46c="/>
+        <field:input field="preprocessorId" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_preprocessorId" validationMessageCode="field_invalid_integer" z="Q6N4mz7E36I+jFnJudQKwCeIrBU="/>
+        <field:input field="geneInfo" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_geneInfo" z="2M/aqGzDmhGWkwqY6qxBB05alGY="/>
+        <field:input field="explorationType" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_explorationType" z="1x6/NwMGucitjYYSiD3sEpsiWtg="/>
+        <field:input field="geneClusterAnalysis" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_geneClusterAnalysis" z="S6g0Qr9CxR9ZGa7HBikWPRC0ndU="/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_es_uc3m_tsc_kfca_explore_KFCAResults" render="${not empty dependencies}" z="Fhmgen9A7nZKGIXapJlxO0cZH9g="/>
+</div>

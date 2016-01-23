@@ -1,0 +1,115 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<spring:url value="/resources/js/fcagraph/fcagraph_sparse_phis.js" var="fcagraph_url" />
+	<spring:url value="/resources/dijit/themes/tundra/images/tabClose.png" var="closeImg"/>
+	<spring:url value="/kfcaresultses/concept_range_maxplus/" var="maxplus_concept_range_url"/>
+	<spring:url value="/kfcaresultses/concept_range_minplus/" var="minplus_concept_range_url"/>
+			    
+    <script src="${fcagraph_url}" language="javascript" type="text/javascript" ><!-- required for FF3 and Opera --></script>        
+
+	<div id="div_detailed_info" style="width:100%;min-height:5000px;top:0px;left:0px;position:absolute;background-color:rgba(0, 0, 0, 0.9);z-index:256;" onclick="$('#div_detailed_info').hide();" >
+		<div id="gene_detailed_div" style="width:80%;top:100px;left:100px;position: absolute;-webkit-border-radius: 15px;-moz-border-radius: 15px;border-radius: 15px;background-color:#FFF;">				
+			<div id="close_div" style="float: right;cursor: pointer;margin-right: 4px;" onclick="$('#div_detailed_info').hide();" >			
+			<img src="${closeImg}"/>
+			</div>
+			
+			<div style="margin-top:50px; margin-left:2em;margin-right:50px;" >
+		 This view  shows a full lattice with all the possible concepts for all the possible microarrays experiments available in the gene expression matrix. 
+		 In the lattice the blue circles are the concepts where the selected gene belongs for a 
+		 <span class="phi_var_phi"><!--  ...  --></span> threshold range, the blue lines show the path that follows the selected 
+		 gene between the different concepts when the threshold changes. 
+		 The radius of each concept is proportional to the threshold range where the probeset remains in that concept, 
+		 this means that a concept will be larger if the selected probeset remains longer on that concept when sweeping over <span class="phi_var_phi"><!--  ...  --></span>.
+		</div>
+			
+			<div style="margin-top:50px; margin-left:auto; margin-right: auto; width:750px; position: relative;">
+				<div id="g_fcamenus" style="top:0; left:0; position: absolute;" >
+					
+					<input type="button" id="g_butcenter" value="restore" style="width:60px;"/><br/>
+					<input type="button" id="g_butzoomin" value="+" style="width:20px;"/>
+					<input type="button" id="g_butzoomout" value="-" style="width:20px;"/>
+					<input type="button" id="g_savecanvas" value="s" style="width:20px;"/>
+					<p id="g_tooltip" style="top:0; left:0; position: absolute; background-color: #B9F2FF; padding: 2px 10px 2px 10px; border:1px solid green; opacity: 0.9; border-radius: 5px;  text-align:left; line-height:100%; visibility:hidden;">
+					<!-- required for FF3 and Opera -->	
+					</p>
+							
+				</div>
+				<canvas id="g_fcacanvas" style="background-color: #FFFFFF; width:750px;" >
+				<!-- required for FF3 and Opera -->
+				</canvas>
+			</div>
+			
+			<div id="geneinfo_div">
+		   	<table style="max-width:778px;word-wrap: break-word;margin-bottom: 50px;margin-left:2em;">		   		
+		        	<tr><td>Probe Set ID</td><td><div id="probe_set_id"><!--  --></div></td></tr>								
+					<tr><td>Gene Title</td><td><div id="gene_title_id"><!--  --></div></td></tr>
+					<tr><td>Target Description</td><td><div id="target_description_id"><!--  --></div></td></tr>
+					<tr><td>AGI</td><td><div id="agi_id"><!--  --></div></td></tr>
+					<tr><td>Gene Symbol</td><td><div id="genesymbol_id"><!--  --></div></td></tr>
+					<tr><td>QTL</td><td><div id="qtl_id"><!--  --></div></td></tr>
+					
+					<tr><td>Gene Ontology Biological Process</td><td><div id="go_bp_id"><!--  --></div></td></tr>
+					<tr><td>Gene Ontology Cellular Component</td><td><div id="go_cc_id"><!--  --></div></td></tr>
+					<tr><td>Gene Ontology Molecular Function</td><td><div id="go_mf_id"><!--  --></div></td></tr>
+					<tr><td>Pathway</td><td><div id="pathway_id"><!--  --></div></td></tr>
+									
+					<tr><td>GeneChip Array</td><td><div id="gene_chip_array_id"><!--  --></div></td></tr>
+					<tr><td>Transcript ID(Array Design)</td><td><div id="transcript_id"><!--  --></div></td></tr>
+					<tr><td>Species Scientific Name</td><td><div id="species_scientific_name_id"><!--  --></div></td></tr>
+					<tr><td>Annotation Date</td><td><div id="annotation_date_id"><!--  --></div></td></tr>
+					<tr><td>Sequence Type</td><td><div id="sequence_type_id"><!--  --></div></td></tr>
+					<tr><td>Sequence Source</td><td><div id="sequence_source_id"><!--  --></div></td></tr>
+					<tr><td>Representative Public ID</td><td><div id="representative_public_id"><!--  --></div></td></tr>
+					<tr><td>Archival UniGene Cluster</td><td><div id="archival_unigene_cluster_id"><!--  --></div></td></tr>
+					<tr><td>UniGene ID</td><td><div id="unigene_id"><!--  --></div></td></tr>
+					<tr><td>Genome Version</td><td><div id="genome_version_id"><!--  --></div></td></tr>
+					<tr><td>Alignments</td><td><div id="alignments_id"><!--  --></div></td></tr>
+					<tr><td>Gene Symbol</td><td><div id="gene_symbol_id"><!--  --></div></td></tr>
+					<tr><td>Chromosomal Location</td><td><div id="chromosomal_location_id"><!--  --></div></td></tr>
+					<tr><td>Unigene Cluster Type</td><td><div id="unigene_cluster_id"><!--  --></div></td></tr>
+					<tr><td>Ensembl</td><td><div id="ensembl_id"><!--  --></div></td></tr>
+					<tr><td>Entrez Gene</td><td><div id="entrez_gene_id"><!--  --></div></td></tr>
+					<tr><td>SwissProt</td><td><div id="swissprot_id"><!--  --></div></td></tr>
+					<tr><td>EC</td><td><div id="ec_id"><!--  --></div></td></tr>
+					<tr><td>OMIM</td><td><div id="omim_id"><!--  --></div></td></tr>
+					<tr><td>RefSeq Protein ID</td><td><div id="refseq_protein_id"><!--  --></div></td></tr>
+					<tr><td>RefSeq Transcript ID</td><td><div id="refseq_transcript_id"><!--  --></div></td></tr>
+					<tr><td>FlyBase</td><td><div id="flybase_id"><!--  --></div></td></tr>
+					<tr><td>WormBase</td><td><div id="wormbase_id"><!--  --></div></td></tr>
+					<tr><td>MGI Name</td><td><div id="mgi_name_id"><!--  --></div></td></tr>
+					<tr><td>RGD Name</td><td><div id="rgd_name_id"><!--  --></div></td></tr>				
+					<tr><td>SGD accession number</td><td><div id="sgd_accesion_number_id"><!--  --></div></td></tr>
+					
+					
+					<tr><td>InterPro</td><td><div id="interpro_id"><!--  --></div></td></tr>
+					<tr><td>Trans Membrane</td><td><div id="trans_membrane_id"><!--  --></div></td></tr>
+					<tr><td>Annotation Description</td><td><div id="annotation_description_id" style="max-width:750px;"><!--  --></div></td></tr>
+					<tr><td>Annotation Transcript Cluster</td><td><div id="annotation_transcript_id"><!--  --></div></td></tr>
+				 			    
+			    </table>    
+		    </div>
+		</div>
+	</div>
+
+    
+<script type="text/javascript">
+	$("#gene_detailed_div").click(function(event){
+		  event.stopImmediatePropagation();
+	});
+	$("#div_detailed_info").hide();
+	function fetch_range_info(id,gene_name,max_min_plus){
+		var url;		
+		if (max_min_plus){
+			url="${maxplus_concept_range_url}"+id+"/"+gene_name;
+		}else{
+			url="${minplus_concept_range_url}"+id+"/"+gene_name;
+		}
+		
+		$.getJSON(url,function(data){			
+			var json=data;
+			g_plotFCA(750,500,data);
+		
+		});	
+	};
+</script>
+</jsp:root>
+

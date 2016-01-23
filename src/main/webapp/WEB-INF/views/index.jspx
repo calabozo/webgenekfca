@@ -1,0 +1,88 @@
+<div xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
+  <jsp:directive.page contentType="text/html;charset=UTF-8" />
+  <jsp:output omit-xml-declaration="yes" />
+  <spring:message var="app_name" code="application_name" htmlEscape="false" />
+  <spring:message var="title" code="welcome_titlepane" arguments="${app_name}" htmlEscape="false" />
+  <spring:url value="/resources/images/DNA_Furchen.png" var="dnaImage"/>
+  
+  <!-- 
+  <util:panel id="title" title="${title}">
+   -->
+   <div style="background-color:white;padding:30px;">
+    <h3>
+    	 <c:if test="${cookie.mode.value=='kfca'}">
+    		<spring:message code="welcome_h3" arguments="WebKFCA" />
+  		</c:if>
+  		<c:if test="${cookie.mode.value!='kfca'}">
+     		<spring:message code="welcome_h3" arguments="WebGeneKFCA" />
+  		</c:if>
+    </h3>
+  
+    <c:if test="${cookie.mode.value=='kfca'}">
+	    <p>
+	      This is a <b>Beta</b> web based tool which helps the researcher to group similar objects based on their attributes.
+	    </p>
+	    <p>
+	    	The objects are grouped based on the concepts obtained from a K-Formal concept Analysis. More information about this algorithm can be found in this <a href="http://cla.inf.upol.cz/papers/cla2012/short/paper2.pdf">document</a>.
+	    </p>
+		
+	</c:if> 
+  
+  	<c:if test="${cookie.mode.value!='kfca'}">
+	    <p>
+	      This is a <b>Beta</b> web based tool which helps the researcher to group similar genes based on their expression profiles for different experiments.
+	    </p>
+	    <p>
+	    	The genes are grouped based on the concepts obtained from a K-Formal Concept Analysis. More information about this algorithm can be found in this <a href="http://link.springer.com/chapter/10.1007%2F978-3-642-20514-9_11">document</a>.
+	    </p>	
+	    
+	</c:if>	
+	<p>
+			From this web you can explore some of the uploaded experiments. If you have a user account then you can login and upload more experiments.
+	</p>   
+	
+	<!-- 
+    <a href="http://commons.wikimedia.org/wiki/File:DNA_Furchen.png" style="float:left;">
+	<img src="${dnaImage}" alt="DNA String"  width="100"/>
+	</a>
+    -->
+    <div style="height:150px;margin-top:50px;">
+    
+    	<spring:url value="/datamatrices?page=1&amp;size=10" var="list_all"/>    	
+    	<a class="cssbutton poscenter"  href="${list_all}">Let's explore!</a> 
+    		
+		<sec:authorize access="isAuthenticated()">    		
+		<br/>
+		<br/>
+    	<spring:url value="/datamatrices?form" var="new_matrix"/>
+    	<a class="cssbutton poscenter" href="${new_matrix}">
+      			<spring:message code="welcome_new_upload"/>
+    	</a>
+    	</sec:authorize>    	 
+    	
+    <!-- 	
+		    <sec:authorize access="isAnonymous()">
+		    <div  style="padding-top:10px;">		    	
+	        	<spring:url value="/login" var="login"/>  			
+    			<a href="${login}">
+      			<spring:message code="security_login"/>
+    			</a>	    		
+	    	</div>    		
+	    	</sec:authorize>    	 
+     -->	
+    </div>
+    <c:if test="${cookie.mode.value=='kfca'}">
+ 		<p>If you want to analyse a <b>gene expression</b> matrix you can access to a gene K-FCA version of this web by clicking  
+	    	<a href="general/changetype/webkfca">here</a>.   
+	    </p>
+	 </c:if>
+	<c:if test="${cookie.mode.value!='kfca'}">
+		<p>    	   
+	    	If you want to analyse a <b>generic matrix</b> not gene related you can access to a K-FCA generic version of this web by clicking  
+	    	<a href="general/changetype/kfca">here</a>.   
+	    </p>
+	</c:if>
+  <!-- </util:panel>
+   -->
+   </div>
+</div>

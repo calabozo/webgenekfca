@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_es_uc3m_tsc_gene_DataMatrix" modelAttribute="dataMatrix" path="/datamatrices" versionField="Version" z="user-managed">
+        <field:simple field="preprocessor" id="c_es_uc3m_tsc_gene_DataMatrix_preprocessor" messageCode="entity_reference_not_managed" messageCodeAttribute="Preprocessor" z="hIqZ5UoOXDIkf6CiKXTyG+6f6dE="/>
+        <field:input field="name" id="c_es_uc3m_tsc_gene_DataMatrix_name" required="true" z="HNQ8m32b1KO2N9mI1qGGHmOL8LQ="/>
+        <field:textarea field="description" id="c_es_uc3m_tsc_gene_DataMatrix_description" z="BLQ+n7q02tl5YH3oX37PbCSWuJ8="/>
+        <field:input field="colNames" id="c_es_uc3m_tsc_gene_DataMatrix_colNames" z="8EIgINFE5Zm+p3Lj9ujbtCzBd+0="/>
+        <field:textarea field="rawData" id="c_es_uc3m_tsc_gene_DataMatrix_rawData" render="false" z="user-managed"/>
+        <field:input field="file" id="c_es_uc3m_tsc_gene_DataMatrix_file" render="false" z="user-managed"/>
+        <field:input field="rowNames" id="c_es_uc3m_tsc_gene_DataMatrix_rowNames" z="g7VPUnmp51MC+mpbaj36C3Rol0c="/>
+        <field:select field="microArrayType" id="c_es_uc3m_tsc_gene_DataMatrix_microArrayType" items="${microarrayenums}" path="microarrayenums" render="false" z="user-managed"/>
+        <field:input field="processFiles" id="c_es_uc3m_tsc_gene_DataMatrix_processFiles" render="false" z="user-managed"/>
+        <field:input field="celIDFiles" id="c_es_uc3m_tsc_gene_DataMatrix_celIDFiles" render="false" z="user-managed"/>        
+    </form:update>
+</div>

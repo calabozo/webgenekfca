@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
+    <util:load-graphs/>
+    <util:load-maths/>
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:create id="fc_es_uc3m_tsc_gene_Preprocessor" modelAttribute="preprocessor" path="/preprocessors" render="${empty dependencies}" z="CnpKu3Zrf2g9x92tjCjf0S41z6A=">
+        <field:input field="name" id="c_es_uc3m_tsc_gene_Preprocessor_name" z="user-managed"/>
+        <div style="display: none;">
+            <field:select field="dataMatrix" id="c_es_uc3m_tsc_gene_Preprocessor_dataMatrix" itemValue="id" items="${datamatrixes}" path="/datamatrices" z="user-managed"/>
+        </div>
+        <spring:message code="preprocessor_histogram"/>
+        <div id="placeholder" style="width:600px;height:300px;" version="2.0">
+            <!-- required for FF3 and Opera -->
+        </div>
+        <c:if test="${cookie.mode.value!='kfca'}">
+        <spring:message code="preprocessor_description"/>
+        </c:if>
+        <c:if test="${cookie.mode.value=='kfca'}">
+        <spring:message code="preprocessor_kfca_description"/>
+        </c:if>
+        <field:radio field="preprocessorType" id="c_es_uc3m_tsc_gene_Preprocessor_preprocessorType" itemLabel="mathJSFormula" items="${preprocessorenums}" path="preprocessorenums" z="user-managed"/>
+        <field:input field="algorithm" id="c_es_uc3m_tsc_gene_Preprocessor_algorithm" render="false" z="user-managed"/>
+        <field:select field="kfcaResults" id="c_es_uc3m_tsc_gene_Preprocessor_kfcaResults" itemValue="id" items="${kfcaresultses}" path="/kfcaresultses" render="false" z="user-managed"/>
+        <field:input field="resultException" id="c_es_uc3m_tsc_gene_Preprocessor_resultException" render="false" z="user-managed"/>
+        <field:datetime dateTimePattern="${preprocessor_creationdate_date_format}" field="creationDate" id="c_es_uc3m_tsc_gene_Preprocessor_creationDate" render="false" z="user-managed"/>
+        
+        <c:if test="${preprocessor.dataMatrix.microArrayType.microarray}">
+	        <spring:message code="preprocessor_expressiontype"/>
+	        <br>
+	            <!-- - -->
+	        </br>	    	
+	    	<field:select field="geneExpressionType" id="c_es_uc3m_tsc_gene_Preprocessor_geneExpressionType" itemLabel="geneExpName" items="${geneexptypes}" path="geneexptypes" z="user-managed"/>
+        </c:if>
+        <c:if test="${!preprocessor.dataMatrix.microArrayType.microarray}">
+        	<div style="display: none;">
+        	<field:select field="geneExpressionType" id="c_es_uc3m_tsc_gene_Preprocessor_geneExpressionType" itemLabel="geneExpName" items="${geneexptypes}" path="geneexptypes" z="user-managed"/>
+        	</div>
+        </c:if>
+                
+                
+        
+        <spring:message code="preprocessor_group"/>
+        <table class="simpletable" width="70%">
+            <tr>
+                <td>
+                    <table class="simpletable" style="float:left;">
+                        <tr>
+                            <th>
+                                <spring:message code="label_es_uc3m_tsc_gene_datamatrix_colnames"/>
+                            </th>
+                            <th>
+                                <spring:message code="label_es_uc3m_tsc_gene_preprocessors_group_colnames"/>
+                            </th>
+                        </tr>
+                        <c:set scope="page" value="0" var="i"/>
+                        <c:forEach items="${preprocessor.dataMatrix.colNames}" var="colName">
+                            <tr>
+                                <td>
+                                    <span class="spanColName">
+                                        <c:out value="${colName}"/>
+                                    </span>
+                                </td>
+                                <td>
+                                    <select class="selectGroupId" id="selectGroupId${i}" onchange="updateSelectGroup();">
+                                        <c:forEach begin="0" end="${fn:length(preprocessor.dataMatrix.colNames)-1}" step="1" var="opId" varStatus="status">
+                                            <c:if test="${opId != i}">
+                                                <option value="${opId}">G ${opId}</option>
+                                            </c:if>
+                                            <c:if test="${opId == i}">
+                                                <option selected="selected" value="${opId}"> Gx ${opId}</option>
+                                            </c:if>
+                                        </c:forEach>
+                                    </select>
+                                </td>
+                            </tr>
+                            <c:set scope="page" value="${i + 1}" var="i"/>
+                        </c:forEach>
+                    </table>
+                </td>
+                <td>
+                    <fieldset class="simplefieldset" style="float: right;width:300px;">
+                        <legend>
+                            <spring:message code="label_es_uc3m_tsc_gene_preprocessors_group_name"/>
+                        </legend>
+                        <ul>
+                            <c:forEach begin="0" end="${fn:length(preprocessor.dataMatrix.colNames)-1}" step="1" var="i" varStatus="status">
+                                <li type="none">
+                                    <input class="inputGroupId" oninput="updateSelectGroup();" title="" type="text" value="Group ${i}"/>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </fieldset>
+                </td>
+            </tr>
+        </table>
+        <div style="display: none;">
+            <field:range decoration="true" field="maxPhiToExplore" id="c_es_uc3m_tsc_gene_Preprocessor_maxPhiToExplore" max="100" min="0" z="user-managed"/>
+            <field:input field="groupName" id="c_es_uc3m_tsc_gene_Preprocessor_groupName" z="PZ7rMFqfE1d3LQLt9MqLCIvNJMo="/>
+            <field:input field="groupId" id="c_es_uc3m_tsc_gene_Preprocessor_groupId" z="15hJHMqeDCBPIMcAHjckmsgghqc="/>
+        </div>
+        <field:textarea field="groupMatrix" id="c_es_uc3m_tsc_gene_Preprocessor_groupMatrix" render="false" z="user-managed"/>
+        <field:input field="geneInfo" id="c_es_uc3m_tsc_gene_Preprocessor_geneInfo" render="false" z="user-managed"/>
+        <field:input field="rowNames" id="c_es_uc3m_tsc_gene_Preprocessor_rowNames" render="false" z="user-managed"/>
+        <field:input field="logger" id="c_es_uc3m_tsc_gene_Preprocessor_logger" render="false" z="user-managed"/>
+        <field:input field="thProcessor" id="c_es_uc3m_tsc_gene_Preprocessor_thProcessor" render="false" z="user-managed"/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_es_uc3m_tsc_gene_Preprocessor" render="${not empty dependencies}" z="ispiB8EBEWEu99oh04rN+7u7Ei0="/>
+    <script type="text/javascript">
+// <![CDATA[
+    
+var d1 = [];
+var d2 = [];
+var d3 = [];
+var d4 = [];
+var d5 = [];
+var d6 = [];
+var d7 = [];
+var d8 = [];
+var d9 = [];
+var d10 = [];
+var d11 = [];
+var d12 = [];
+
+var vFunc=new Array(11);
+
+function plotGraph(data){
+	$.plot($("#placeholder"), 
+			[ data ],
+			{
+		  	xaxis: { 			    			   
+			    ticks:7
+			  }
+			});
+};
+
+function selectPreprocessor(p){
+	//var numElements=[${histogram[0].numElements},${histogram[1].numElements},${histogram[2].numElements},${histogram[3].numElements},${histogram[4].numElements},${histogram[5].numElements},${histogram[6].numElements}];
+    
+	//dijit.byId('_maxPhiToExplore_slider_id').attr('maximum',numElements[p]);	
+	//dijit.byId('_maxPhiToExplore_slider_id').attr('value',numElements[p]);
+	plotGraph(vFunc[p]);	
+}
+
+$(function () {
+     
+// ]]><c:forEach items="${histogram[0].histogram}" var="val">  
+    	d1.push([${val[0]}, ${val[1]}]);    	    	    	
+	</c:forEach>
+        <c:forEach items="${histogram[1].histogram}" var="val">  
+		d2.push([${val[0]}, ${val[1]}]);		
+	</c:forEach>
+        <c:forEach items="${histogram[2].histogram}" var="val">  
+		d3.push([${val[0]}, ${val[1]}]);				
+	</c:forEach>
+        <c:forEach items="${histogram[3].histogram}" var="val">  
+		d4.push([${val[0]}, ${val[1]}]);				
+	</c:forEach>
+        <c:forEach items="${histogram[4].histogram}" var="val">  
+		d5.push([${val[0]}, ${val[1]}]);				
+	</c:forEach>
+    <c:forEach items="${histogram[5].histogram}" var="val">  
+		d6.push([${val[0]}, ${val[1]}]);				
+	</c:forEach>
+	<c:forEach items="${histogram[6].histogram}" var="val">  
+		d7.push([${val[0]}, ${val[1]}]);				
+	</c:forEach>
+	<c:forEach items="${histogram[7].histogram}" var="val">  
+		d8.push([${val[0]}, ${val[1]}]);				
+	</c:forEach>
+	<c:forEach items="${histogram[8].histogram}" var="val">  
+		d9.push([${val[0]}, ${val[1]}]);				
+	</c:forEach>
+	<c:forEach items="${histogram[9].histogram}" var="val">  
+		d10.push([${val[0]}, ${val[1]}]);				
+	</c:forEach>
+	<c:forEach items="${histogram[10].histogram}" var="val">  
+		d11.push([${val[0]}, ${val[1]}]);				
+	</c:forEach>
+	<c:forEach items="${histogram[11].histogram}" var="val">  
+		d12.push([${val[0]}, ${val[1]}]);				
+	</c:forEach>
+	
+	vFunc[0]=d1;
+	vFunc[1]=d2;	
+	vFunc[2]=d3;
+	vFunc[3]=d4;
+	vFunc[4]=d5;
+	vFunc[5]=d6;
+	vFunc[6]=d7;
+	vFunc[7]=d8;
+	vFunc[8]=d9;
+	vFunc[9]=d10;
+	vFunc[10]=d11;
+	vFunc[11]=d12;
+	
+	
+	<c:choose>
+            <c:when test="${preprocessor.preprocessorType == preprocessorenums[0]}">
+	        selectPreprocessor(0);
+	    </c:when>
+            <c:when test="${preprocessor.preprocessorType == preprocessorenums[1]}">
+        	selectPreprocessor(1);
+    	</c:when>
+            <c:when test="${preprocessor.preprocessorType == preprocessorenums[2]}">
+		    selectPreprocessor(2);
+		</c:when>
+            <c:when test="${preprocessor.preprocessorType == preprocessorenums[3]}">
+	    	selectPreprocessor(3);
+		</c:when>
+            <c:when test="${preprocessor.preprocessorType == preprocessorenums[4]}">
+    		selectPreprocessor(4);
+		</c:when>
+			<c:when test="${preprocessor.preprocessorType == preprocessorenums[5]}">
+			selectPreprocessor(5);
+		</c:when>
+			<c:when test="${preprocessor.preprocessorType == preprocessorenums[6]}">
+			selectPreprocessor(6);
+		</c:when>
+			<c:when test="${preprocessor.preprocessorType == preprocessorenums[7]}">
+			selectPreprocessor(7);
+		</c:when>
+			<c:when test="${preprocessor.preprocessorType == preprocessorenums[8]}">
+			selectPreprocessor(8);
+		</c:when>
+			<c:when test="${preprocessor.preprocessorType == preprocessorenums[9]}">
+			selectPreprocessor(9);
+		</c:when>
+			<c:when test="${preprocessor.preprocessorType == preprocessorenums[10]}">
+			selectPreprocessor(10);
+		</c:when>
+			<c:when test="${preprocessor.preprocessorType == preprocessorenums[11]}">
+			selectPreprocessor(11);
+		</c:when>
+        </c:choose>
+	
+});
+//<![CDATA[
+
+      
+           
+$('#_preprocessorType_id1').click(function() {	
+    selectPreprocessor(0);
+});	
+$('#_preprocessorType_id2').click(function() {	
+    selectPreprocessor(1);
+});
+$('#_preprocessorType_id3').click(function() { 	
+    selectPreprocessor(2);
+});
+$('#_preprocessorType_id4').click(function() { 	
+    selectPreprocessor(3);
+});
+$('#_preprocessorType_id5').click(function() { 	
+    selectPreprocessor(4);
+});
+$('#_preprocessorType_id6').click(function() { 	
+    selectPreprocessor(5);
+});
+$('#_preprocessorType_id7').click(function() { 	
+    selectPreprocessor(6);
+});
+$('#_preprocessorType_id8').click(function() { 	
+    selectPreprocessor(7);
+});
+$('#_preprocessorType_id9').click(function() { 	
+    selectPreprocessor(8);
+});
+$('#_preprocessorType_id10').click(function() { 	
+    selectPreprocessor(9);
+});
+$('#_preprocessorType_id11').click(function() { 	
+    selectPreprocessor(10);
+});
+$('#_preprocessorType_id12').click(function() { 	
+    selectPreprocessor(11);
+});
+
+$('#_maxPhiToExplore_id').click(function() { 
+	$('#_maxPhiToExplore_label_id').text($('#_maxPhiToExplore_id').val());
+});
+
+function updateSelectGroup(){
+	var options;
+	var i;
+	var s;
+	
+	var sel=$('.selectGroupId');
+	var inp=$('.inputGroupId');
+	var cln=$('.spanColName');
+	var group_id='';
+	
+	var groupIdStatus = new Array(sel.length);
+	for (s=0;s<sel.length;s++){ 
+		groupIdStatus[s]=new Array();
+	}
+	
+	for (s=0;s<sel.length;s++){ 	
+		options = sel[s];
+		for (i=0;i<options.length;i++){
+			options[i].text=inp[i].value;
+			if (options[i].selected){
+				groupIdStatus[i][groupIdStatus[i].length]=cln[s].textContent;
+				if (group_id==''){
+					group_id=''+i;
+				}else{
+					group_id+=','+i;
+				}
+			}
+		}
+	}
+	
+	i=0;
+	for (s=0;s<sel.length;s++){ 
+		if (groupIdStatus[s].length>0){
+			inp[s].style.color='';
+			inp[s].title=groupIdStatus[s];
+			inp[s].tag=''+i;
+			i++;
+		}else{
+			inp[s].style.color='#CCC';
+			inp[s].title='';
+			inp[s].tag='';
+		}
+	}
+	
+	var group_name='';
+	group_id='';
+	
+	for (i=0;i<inp.length;i++){
+		if (inp[i].tag!=''){
+			if (group_name==''){
+				group_name=inp[i].value;				
+			}else{
+				group_name+=','+inp[i].value;				
+			}
+		}		
+		options = sel[i];
+		for (j=0;j<options.length;j++){
+			if (options[j].selected){
+				if (group_id==''){
+					group_id=''+inp[j].tag;
+				}else{
+					group_id+=','+inp[j].tag;
+				}
+			}
+		}
+	}
+	
+	$('#_groupName_id').val(group_name); 
+	$('#_groupId_id').val(group_id); 
+};
+
+
+ // ]]>
+ 
+
+var inputEvents = [];  //Global var__
+
+dojo.addOnLoad(function() {
+	updateSelectGroup();
+	
+	
+	var pMaxPhi = dijit.byId("_maxPhiToExplore_id");
+    dojo.connect(pMaxPhi, "onChange", function(newValue) {
+    	pMaxPhi.innerHTML=newValue;
+    });
+	
+	var pType = dijit.byId("_preprocessorType_id");
+    dojo.connect(pType, "onChange", function() {
+    	var eqLabel = MathJax.Hub.getAllJax("equation")[0];
+    	
+    	if ('${preprocessorenums[0]}'==pType.get("value")){
+    		plotGraph(vFunc[0]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[0]}"]);
+    	}else if ('${preprocessorenums[1]}'==pType.get("value")){
+    		plotGraph(vFunc[1]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[1]}"]);
+    	}else if ('${preprocessorenums[2]}'==pType.get("value")){
+    		plotGraph(vFunc[2]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[2]}"]);    		
+    	}else if ('${preprocessorenums[3]}'==pType.get("value")){
+    		plotGraph(vFunc[3]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[3]}"]);    		
+    	}else if ('${preprocessorenums[4]}'==pType.get("value")){
+    		plotGraph(vFunc[4]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[4]}"]);    		
+    	}else if ('${preprocessorenums[5]}'==pType.get("value")){
+    		plotGraph(vFunc[5]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[5]}"]);    		
+    	}else if ('${preprocessorenums[6]}'==pType.get("value")){
+    		plotGraph(vFunc[6]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[6]}"]);    		
+    	}else if ('${preprocessorenums[7]}'==pType.get("value")){
+    		plotGraph(vFunc[7]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[7]}"]);    		
+    	}else if ('${preprocessorenums[8]}'==pType.get("value")){
+    		plotGraph(vFunc[8]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[8]}"]);    		
+    	}else if ('${preprocessorenums[9]}'==pType.get("value")){
+    		plotGraph(vFunc[9]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[9]}"]);    		
+    	}else if ('${preprocessorenums[10]}'==pType.get("value")){
+    		plotGraph(vFunc[10]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[10]}"]);    		
+    	}else if ('${preprocessorenums[11]}'==pType.get("value")){
+    		plotGraph(vFunc[11]);
+    		MathJax.Hub.Queue(["Text",eqLabel,"${preprocessorlabels[11]}"]);    		
+    	};
+    	
+    	
+    });
+});
+
+
+ 
+ </script>
+</div>

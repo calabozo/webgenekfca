@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_es_uc3m_tsc_kfca_explore_KFCAResults" items="${kfcaresultses}" z="nFJcHvKzLHWPGHfD7DnHrb6pHXk=">
+        <table:table data="${kfcaresultses}" id="l_es_uc3m_tsc_kfca_explore_KFCAResults" path="/kfcaresultses" z="0Sh/sPRF7k7JFUVtUe3lSaucxxs=">
+            <table:column date="true" dateTimePattern="${KFCAResults__startdate_date_format}" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_startDate" property="startDate" z="Q47eDzgWKjVyunXkEzGFGQTxQzk="/>
+            <table:column date="true" dateTimePattern="${KFCAResults__stopdate_date_format}" id="c_es_uc3m_tsc_kfca_explore_KFCAResults_stopDate" property="stopDate" z="21bqKWmpCzmfapm5raIpLoqb8pg="/>
+            <table:column id="c_es_uc3m_tsc_kfca_explore_KFCAResults_processedMatrix" property="processedMatrix" z="Pq067nJcEpOQh0ma/SQxC0mDEZc="/>
+            <table:column id="c_es_uc3m_tsc_kfca_explore_KFCAResults_minPlusNumConcepts" property="minPlusNumConcepts" z="N2yDL/GK0ZthemTYkouyqxU8Mto="/>
+            <table:column id="c_es_uc3m_tsc_kfca_explore_KFCAResults_maxPlusNumConcepts" property="maxPlusNumConcepts" z="ByTaI68ne7vOl8lGIDqnxe9P9/M="/>
+            <table:column id="c_es_uc3m_tsc_kfca_explore_KFCAResults_colNames" property="colNames" z="AlRLW9AIlkNKPW9SiFaskYrwW94="/>
+        </table:table>
+    </page:list>
+</div>

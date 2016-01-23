@@ -1,0 +1,20 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+
+	<spring:url value="/resources/js/fileuploader/fileuploader.css" var="fileuploader_css"/>
+    <spring:url value="/resources/js/fileuploader/fileuploader.js" var="fileuploader_js"/>
+    
+    <link href="${fileuploader_css}" rel="stylesheet" type="text/css"/>
+    <script src="${fileuploader_js}" language="javascript" type="text/javascript" ><!-- required for FF3 and Opera --></script>
+    
+    <script type="text/javascript">
+    function createUploader(uploader_div_id,dest_url){            
+            var uploader = new qq.FileUploader({
+                element: document.getElementById(uploader_div_id),
+                action: dest_url,
+                multiple: false,
+                debug: true});
+    }
+    </script>
+    
+    
+</jsp:root>

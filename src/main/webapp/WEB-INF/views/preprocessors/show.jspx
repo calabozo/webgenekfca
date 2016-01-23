@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <util:load-maths/>
+    <util:load-jquery/>
+    <util:load-graphs/>
+    <spring:url value="/datamatrices/" var="show_datamatrix_url"/>
+    <spring:url value="/resources/styles/ui-lightness/jquery-ui-1.8.20.custom.css" var="ui_lightnes_url"/>
+    <spring:url value="/resources/js/jquery/jquery-ui-1.8.20.custom.min.js" var="progressbar_url"/>
+    <link href="${ui_lightnes_url}" rel="stylesheet" type="text/css"/>
+    <script language="javascript" src="${progressbar_url}" type="text/javascript">
+        <!-- required for FF3 and Opera -->
+    </script>
+    <spring:message code="label_start" var="label_start"/>
+    <spring:message code="label_stop" var="label_stop"/>
+    <spring:message code="label_explore" var="label_explore"/>
+    <spring:message code="label_analysis" var="label_analysis"/>
+    <spring:message code="label_unknown" var="label_unknown"/>
+    <spring:url value="download/${preprocessor.id }" var="preprocessor_download_url"/>
+    <page:show create="false" id="ps_es_uc3m_tsc_gene_Preprocessor" list="false" object="${preprocessor}" path="/preprocessors" update="false" z="user-managed">
+        <div style="padding-left:6em;">
+            <br/>
+            <p><b><spring:message code="label_es_uc3m_tsc_gene_datamatrix"/>: </b><a href="${show_datamatrix_url}${preprocessor.dataMatrix.id}">${preprocessor.dataMatrix.name}</a></p>
+            <br/>
+            <field:display field="name" id="s_es_uc3m_tsc_gene_Preprocessor_name" object="${preprocessor}" z="5kOm1qOBscypOkSRoTkctVeDR/Y="/>
+            <field:display date="true" dateTimePattern="${preprocessor_creationdate_date_format}" field="creationDate" id="s_es_uc3m_tsc_gene_Preprocessor_creationDate" object="${preprocessor}" z="149iwjpj6gMe6shJK1LXM3OvYDY="/>
+            <field:display field="mathJSFormula" id="s_es_uc3m_tsc_gene_Preprocessor_preprocessorType" object="${preprocessor.preprocessorType}" z="user-managed"/>
+            <field:display field="geneExpDescription" id="s_es_uc3m_tsc_gene_Preprocessor_geneExpressionType" object="${preprocessor.geneExpressionType}" z="user-managed"/>
+            <field:display field="dataMatrix" id="s_es_uc3m_tsc_gene_Preprocessor_dataMatrix" object="${preprocessor}" z="K467oMSiubyM2DiGMnoTxovAj/U="/>
+            <field:display field="maxPhiToExplore" id="s_es_uc3m_tsc_gene_Preprocessor_maxPhiToExplore" object="${preprocessor}" render="false" z="user-managed"/>
+            <field:display field="algorithm" id="s_es_uc3m_tsc_gene_Preprocessor_algorithm" object="${preprocessor}" render="false" z="user-managed"/>
+            <field:display field="kfcaResults" id="s_es_uc3m_tsc_gene_Preprocessor_kfcaResults" object="${preprocessor}" render="false" z="user-managed"/>
+            <field:display field="resultException" id="s_es_uc3m_tsc_gene_Preprocessor_resultException" object="${preprocessor}" render="false" z="user-managed"/>
+            <field:display field="size" id="s_es_uc3m_tsc_gene_Preprocessor_size" object="${preprocessor}" z="user-managed"/>
+            <p id="tooltip" style="top:0; left:0; position: absolute; background-color: #A9E2F3; padding: 2px 10px 2px 10px; border:1px solid green; opacity: 0.8; border-radius: 5px;  text-align:center; visibility:hidden;">
+                <!--  ...  -->
+            </p>
+            <b>Processed matrix values</b> (<a alt="textoAlt" href="${preprocessor_download_url}" title="Titulo">Download </a>) :<br/>
+            <canvas id="datamatrix_canvas">
+                <!-- XXX -->
+            </canvas>
+            <br/>
+            <b>Density estimation</b>
+            <div id="placeholder" style="width:600px;height:300px;" version="2.0">
+                <!-- required for FF3 and Opera -->
+            </div>
+            <br/>
+            <script type="text/javascript"> 
+      //<![CDATA[        
+        ${preprocessor.canvas}
+     // ]]>
+      
+        var hist = [];
+        <c:forEach items="${preprocessor.histogram.histogram}" var="val">  
+        hist.push([${val[0]}, ${val[1]}]);    	    	    	
+	    </c:forEach>
+	    $.plot($("#placeholder"), 
+				[ hist ],
+				{
+			  	xaxis: { 			    			   
+				    ticks:11
+				  }
+				});
+      
+      </script>
+            <div id="status_div">
+                <label>
+                    <b>Status :
+        </b>
+                </label>
+                <spring:url value="/resources/images/progressbar" var="progressbar_img"/>
+                <div style="height: 20px;">
+                    <div id="progressbar_group_div">
+                        <div id="progressbar" style="width: 200px; height: 10px;">
+                            <!-- Nanan -->
+                        </div>
+                    </div>
+                </div>
+                <p id="stop_info">
+        	Exploration is running, please wait until finish.
+        	</p>
+            </div>
+            <div id="done_div">
+                <br/>
+                <span>
+			Click on <em>Explore</em> to see the K-Formal Concept Analysis lattices and explore through all the threshold values.<br/>
+			From this view you will be able to explore different lattices and their concepts which are formed by a group of elements with similar characteristics.
+			</span>
+                <input class="cssbutton cssbuttonsmall" id="button_explore" onclick="explore();" type="button" value="${label_explore}"/>
+                <br/>
+                <span>Click on <em>Analysis</em> to identify the desired K-FCA concepts given by their attributes.<br/>
+        	From this view you will be able to analyze what is the evolution of a concept, defined by its attributes, for different threshold values. 
+        	</span>
+                <input class="cssbutton cssbuttonsmall" id="button_analyze" onclick="analyze();" type="button" value="${label_analysis}"/>
+            </div>
+            <!-- <input onclick="explore();" type="button" value="Explore"/> -->
+            <spring:url value="calc/${preprocessor.id}" var="calc_preproccessor_url"/>
+            <spring:url value="stop/${preprocessor.id}" var="stop_preproccessor_url"/>
+            <spring:url value="result/${preprocessor.id}" var="result_preproccessor_url"/>
+            <spring:url value="analysis/${preprocessor.id }" var="analyze_url"/>
+            <!--
+        <a alt="textoAlt" href="${calc_preproccessor_url}?force=true" title="Titulo">
+	    	Start Analysis
+ 	      <img alt="Imagenalt" class="image" src="${list_image_url}" title="Titulo imagen" />
+ 	</a>
+ 	-->
+            <field:display field="groupName" id="s_es_uc3m_tsc_gene_Preprocessor_groupName" object="${preprocessor}" render="false" z="user-managed"/>
+            <field:display field="groupId" id="s_es_uc3m_tsc_gene_Preprocessor_groupId" object="${preprocessor}" render="false" z="user-managed"/>
+            <field:display field="groupMatrix" id="s_es_uc3m_tsc_gene_Preprocessor_groupMatrix" object="${preprocessor}" render="false" z="user-managed"/>
+        </div>
+        <field:display field="geneInfo" id="s_es_uc3m_tsc_gene_Preprocessor_geneInfo" object="${preprocessor}" render="false" z="user-managed"/>
+        <field:display field="rowNames" id="s_es_uc3m_tsc_gene_Preprocessor_rowNames" object="${preprocessor}" render="false" z="user-managed"/>
+        <field:display field="logger" id="s_es_uc3m_tsc_gene_Preprocessor_logger" object="${preprocessor}" render="false" z="user-managed"/>
+        <field:display field="thProcessor" id="s_es_uc3m_tsc_gene_Preprocessor_thProcessor" object="${preprocessor}" render="false" z="user-managed"/>
+    </page:show>
+    <spring:url value="/preprocessors/explorationstatus/${preprocessor.id }" var="status_url"/>
+    <script type="text/javascript">
+    
+  var shouldRefresh=true;
+  $(document).ready(function() {
+  	    $("#progressbar").progressbar({value: 0});
+        $("#progressbar_group_div").hide();
+ 	  	$("#done_div").show();
+	  	$("#status_div").hide();
+	  	refreshProgressBar();
+	});
+  function explore(){
+	  window.location="${result_preproccessor_url}";
+  }
+  function analyze(){
+	  window.location="${analyze_url}";
+  }
+      
+  function refreshProgressBar(){
+	  $.get("${status_url}",function(txt){
+		  var obj = jQuery.parseJSON(txt);
+		  
+		  $("#progressbar").progressbar({value: obj.ratio});
+		  
+		  
+		  if (obj.status=="done"){			  
+			  
+			  $("#done_div").show();
+			  $("#status_div").hide(1000);
+			  $(".quicklinks").show(); //Delete button
+			  shouldRefresh=false;
+			  
+		  }else{
+			  $(".ui-progressbar-value").css("background-image","url(${progressbar_img}/pbar-ani.gif)");
+			  $("#progressbar_group_div").show();
+			  $("#done_div").hide();
+			  $("#status_div").show();
+			  $(".quicklinks").hide(); //Hides delete button
+			  /*
+			  if (obj.es&gt;0){
+			  	$("#estimated_finish").text(obj.es);
+		  	  }else{
+		  		$("#estimated_finish").text("${label_unknown}");
+		  	  }
+			  */
+		  }
+		  	  
+	  });
+	  if (shouldRefresh){
+	  	setTimeout("refreshProgressBar()",1000);
+	  }
+  }
+  
+  </script>
+</div>

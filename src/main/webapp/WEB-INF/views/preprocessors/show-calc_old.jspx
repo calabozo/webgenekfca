@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <util:load-maths/>
+    <page:show id="ps_es_uc3m_tsc_gene_Preprocessor" object="${preprocessor}" path="/preprocessors" z="user-managed">
+        <field:display field="name" id="s_es_uc3m_tsc_gene_Preprocessor_name" object="${preprocessor}" z="user-managed"/>
+        <field:display field="mathJSFormula" id="s_es_uc3m_tsc_gene_Preprocessor_preprocessorType" object="${preprocessor.preprocessorType}" z="user-managed"/>
+        <field:display field="dataMatrix" id="s_es_uc3m_tsc_gene_Preprocessor_dataMatrix" object="${preprocessor}" z="user-managed"/>
+        <field:display field="maxPhiToExplore" id="s_es_uc3m_tsc_gene_Preprocessor_maxPhiToExplore" object="${preprocessor}" z="user-managed"/>                      
+    </page:show>
+    
+    <page:show id="ps_es_uc3m_tsc_util_TreadProcessor" object="${processor}" path="/threadprocessors" z="user-managed">
+        <field:display field="ratioDone" id="s_es_uc3m_tsc_util_TreadProcessor_ratioDone" object="${processor}" z="user-managed"/>
+                             
+    </page:show>
+    
+</div>

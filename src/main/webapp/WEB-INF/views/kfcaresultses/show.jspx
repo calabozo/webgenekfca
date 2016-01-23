@@ -1,0 +1,812 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
+    <spring:url value="/resources/dojox/layout/resources/FloatingPane.css" var="floatingpane_css"/>
+    <link href="${floatingpane_css}" rel="stylesheet" type="text/css"/>
+    <spring:url value="/resources/dojox/layout/resources/ResizeHandle.css" var="resizehandle_css"/>
+    <spring:url value="/preprocessors/" var="show_preproccessor_url"/>
+    <spring:url value="/datamatrices/" var="show_datamatrix_url"/>
+    <link href="${resizehandle_css}" rel="stylesheet" type="text/css"/>
+    <util:load-graphs/>
+    <util:load-maths/>
+    
+  	<spring:url value="/resources/styles/ui-lightness/jquery-ui-1.8.20.custom.css" var="ui_lightnes_url"/>
+  	<spring:url value="/resources/js/jquery/jquery-ui-1.8.20.custom.min.js" var="progressbar_url"/>
+  	<link href="${ui_lightnes_url}" rel="stylesheet" type="text/css"/>
+  	<script language="javascript" src="${progressbar_url}" type="text/javascript">
+      <!-- required for FF3 and Opera -->
+  	</script>
+    
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <c:if test="${!kfcaresults_.isGeneric}">
+        <c:if test="${kfcaresults_.isGeneExpression}">
+            <spring:message code="global_objtype_gene" htmlEscape="false" var="objname"/>
+        </c:if>
+        <c:if test="${!kfcaresults_.isGeneExpression}">
+            <spring:message code="global_objtype_probeset" htmlEscape="false" var="objname"/>
+        </c:if>
+    </c:if>
+    <c:if test="${kfcaresults_.isGeneric}">
+        <spring:message code="global_objtype_object" htmlEscape="false" var="objname"/>
+    </c:if>
+    <div id="normal" style="width:95%;">
+        <h2>
+            <i>KFCA exploration</i> results</h2>
+        <div>
+        <div>
+        <p><b><spring:message code="label_es_uc3m_tsc_gene_datamatrix"/>: </b><a href="${show_datamatrix_url}${preprocessor.dataMatrix.id}">${preprocessor.dataMatrix.name}</a></p>
+        <p><b><spring:message code="label_es_uc3m_tsc_gene_preprocessor"/>: </b><a href="${show_preproccessor_url}${preprocessor.id}">${preprocessor.name}</a></p>
+        
+        </div>
+            <span>
+                <b>
+                    <spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_startdate"/>: </b>
+            </span>
+            <span>${kfcaresults_.startDate}</span>
+            <span>   
+                <b>
+                    <spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_stopdate"/>: </b>
+            </span>
+            <span>${kfcaresults_.stopDate}</span>
+        </div>
+        <spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_numconcepts" var="num_concepts"/>
+        <util:panel id="numconceptsgraph" title="${num_concepts}">
+            <div id="numconceptsgraph_div" onclick="downloadNumConcepts();" style="cursor: pointer;">            
+                <div id="placeholder" style="width:600px;height:300px;" version="2.0">
+                    <!-- required for FF3 and Opera -->
+                </div>
+            </div>
+        </util:panel>
+        <util:panel id="kfca_canvas_div" title="FCA lattice">
+            <div style="width:70%;">
+                <p>
+            You can move the slider on the left to your desired φ/Φ value.
+                           
+        The concept lattice is shown in the canvas bellow where each circle represents a FCA concept that is a cluster of similar ${objname}s.
+        The radius of each circle is proportional to the number of ${objname}s in it.<br/>
+        	
+        You can select a concept by clicking on the corresponding circle.
+        	</p>
+                <c:if test="${kfcaresults_.explorationType&gt;0}">              
+        	This lattice is a reduced version formed by the largest concepts.
+        </c:if>
+            </div>
+            <div>
+                <input CHECKED="true" name="algebra" onclick="max_plus_show();" type="radio" value="maxplus">MaxPlus</input>
+                <input name="algebra" onclick="min_plus_show();" type="radio" value="minplus">MinPlus</input>
+            </div>
+            <div id="max_min_plus_div_id">
+                <div>
+                    <span id="max_min_plus_def">
+                        <spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_desc_maxplus"/>
+                    </span>
+                </div>
+                <table class="simpletable">
+                    <tr>
+                        <td valign="top">
+                            <div id="maxplus_phis">
+                                <!-- Slider MaxMinPlus -->
+                            </div>
+                        </td>
+                        <td valign="top">
+                            <div style="height:50px;overflow:auto;margin-left: 100px;">
+                                <br/>
+                                <span id="phi_var_phi_txt">
+                                    <!--  ...  -->
+                                </span>
+                                <span id="num_concepts_txt" style="margin-left: 2em; ">
+                                    <!--  ...  -->
+                                </span>
+                                <span id="matrix_download_id" style="margin-left: 2em;">	            
+					        	<a alt="textoAlt" href="${max_plus_download_url}" title="Titulo">
+						    	Download
+								</a>
+                                </span>
+                            </div>
+                            <div class="container" id="fcagraph_div" style="width:700px;height:700px;margin-top:0px;">
+                                <!-- FCA Graph -->
+                                <div id="tooltip_drag_div" style="display:none;z-index:100;">
+                                    <p id="max_min_plus_attribute_id" style="opacity:inherit;">
+                                        <!-- comment -->
+                                    </p>
+                                    <a href="${concept_download_url}" id="matrix_concept_id" title="Titulo">
+						    	Download
+								</a>
+                                    <c:if test="${!kfcaresults_.isGeneric}">
+                                        <select id="max_min_plus_objects" onchange="change_gene()" style="width: 100%;overflow: hidden; margin: auto auto 0px 0px;">
+                                            <!-- comment -->
+                                        </select>
+                                        <button onclick="show_GOpValue()" type="button">Gene Ontology</button>
+                                    </c:if>
+                                    <c:if test="${kfcaresults_.isGeneric}">
+                                        <select id="max_min_plus_objects" onchange="change_object()" style="width: 100%;overflow: hidden; margin: auto auto 0px 0px;">
+                                            <!-- comment -->
+                                        </select>
+                                    </c:if>                                
+                                </div>
+                                <util:load-fcagraphs/>
+                            </div>
+                        </td>
+                        <td valign="top">
+                            <b>${objname }: </b>
+                            <input id="geneid" name="geneid" type="text"/>
+                            <button onclick="show_geneid()" type="button">Send</button>
+                            <br/>
+                            <!-- Gene description -->
+                            <div id="geneinfo_div" style="font-family:Tahoma, Geneva, sans-serif;">
+                                <button onclick="show_gene_more_info()" type="button">More info...</button>
+                                <br/>
+                                <c:if test="${!kfcaresults_.isGeneric}">
+                                    <table style="max-width:778px">
+                                        <tr id="main_probe_set_row_id">
+                                            <td>
+                                                <b>Probe Set:</b>
+                                            </td>
+                                            <td>
+                                                <span id="main_probe_set_id">
+                                                    <!--  -->
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="main_agi_row_id">
+                                            <td>
+                                                <b>AGI:</b>
+                                            </td>
+                                            <td>
+                                                <span id="main_agi_id">
+                                                    <!--  -->
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="main_swiss_prot_row_id">
+                                            <td>
+                                                <b>UniProtPK:</b>
+                                            </td>
+                                            <td>
+                                                <span id="main_swiss_prot_id">
+                                                    <!--  -->
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="main_flybase_row_id">
+                                            <td>
+                                                <b>Flybase:</b>
+                                            </td>
+                                            <td>
+                                                <span id="main_flybase_id">
+                                                    <!--  -->
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Gene Symbol:</b>
+                                            </td>
+                                            <td>
+                                                <div id="main_symbol_id">
+                                                    <!--  -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Gene Title:</b>
+                                            </td>
+                                            <td>
+                                                <div id="main_gene_title_id">
+                                                    <!--  -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr id="main_target_description_row_id">
+                                            <td colspan="2">
+                                                <b>Target Description:</b>
+                                                <br/>
+                                                <div id="main_target_description_id">
+                                                    <!--  -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <b>GO Biological Process:</b>
+                                                <br/>
+                                                <div id="main_go_bp_id">
+                                                    <!--  -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <b>GO Cellular Component:</b>
+                                                <div id="main_go_cc_id">
+                                                    <!--  -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <b>GO Molecular Function:</b>
+                                                <br/>
+                                                <div id="main_go_mf_id">
+                                                    <!--  -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Pathway:</b>
+                                            </td>
+                                            <td>
+                                                <div id="main_pathway_id">
+                                                    <!--  -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </c:if>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!--End of Max Plus div -->
+            <div>
+                <c:if test="${!kfcaresults_.isGeneric}">
+                	<util:show-GOpValue/>
+                    <util:show-geneinfo/>                    
+                </c:if>
+                <c:if test="${kfcaresults_.isGeneric}">
+                    <util:show-objectinfo/>
+                </c:if>
+            </div>
+        </util:panel>
+    </div>
+    <spring:url value="matrix_maxplus/${kfcaresults_.id }" var="max_plus_download_url"/>
+    <spring:url value="matrix_minplus/${kfcaresults_.id }" var="min_plus_download_url"/>
+    <spring:url value="/kfcaresultses/concepts_maxplus/${kfcaresults_.id }" var="maxplus_url"/>
+    <spring:url value="/kfcaresultses/concepts_minplus/${kfcaresults_.id }" var="minplus_url"/>
+    <spring:url value="/kfcaresultses/matrix_concept/${kfcaresults_.id }" var="concept_download_url"/>
+    <spring:url value="/genetool/" var="genetools_url"/>
+    <script type="text/javascript">
+
+    dojo.require("dojo.parser");
+    dojo.require("dijit.form.VerticalSlider");
+    dojo.require("dijit.form.VerticalRule");
+    dojo.require("dijit.form.VerticalRuleLabels");    
+    dojo.require("dojo.dnd.move");
+    dojo.require("dojox.layout.FloatingPane");
+    
+var minPlus = new Array();
+var maxPlus = new Array();
+
+var vFunc=new Array(3);
+
+var attrid="";
+var attrName="";
+var url_phi="";
+var eq_phi_varphi="";
+var phi_varphi=0;
+
+var download_url="";
+
+var sliderPhi;
+var sliderVarPhi;
+
+var floating_tooltip_drag_div;
+
+var json_data;
+var max_min_plus=true;
+var	numObjs=0; //Number of objects in the selected current concept
+
+$(document).ready(function() {
+	
+	var maxplus_phis = dojo.byId("maxplus_phis");
+	var rulesMaxNode = document.createElement('div');
+	maxplus_phis.appendChild(rulesMaxNode);
+	var sliderMaxRules = new dijit.form.VerticalRule({
+	      count:11,
+	      style:"width:5px;"
+	}, rulesMaxNode);
+	
+	sliderPhi = new dijit.form.VerticalSlider({
+	    name: "maxplus_slider",
+	    value: ${kfcaresults_.minPhi},
+	    minimum: ${kfcaresults_.minPhi},
+	    maximum: 0,
+	    intermediateChanges: true,
+	    onMouseUp: function(value){        	
+        	change_max_min_plus_phi();
+        },
+        onChange: function(value){
+        	redraw_phi_varphi_values(value);
+        },        
+	    style: "height:300px;"
+	  }, maxplus_phis);
+
+			
+	max_plus_show();
+	change_max_min_plus_phi();
+});
+
+function redraw_phi_varphi_values(value){
+	$("#phi_var_phi_txt").text(eq_phi_varphi+'='+(value*1).toPrecision(7));
+	$(".phi_var_phi").text(eq_phi_varphi);
+	$("#num_concepts_txt").hide();
+	$("#matrix_download_id").hide();
+}
+
+function max_plus_show(){ //select checkbutton MaxPlus
+	max_min_plus=true;
+	url_phi="${maxplus_url}/";
+	
+	$("#max_min_plus_attributes").find('option').remove();
+	$("#max_min_plus_objects").find('option').remove();		
+	
+	eq_phi_varphi="φ"; //phi
+	download_url='${max_plus_download_url}/';
+	$("#max_min_plus_def").html('<spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_desc_maxplus"/>');
+    
+	
+	phi_varphi=${kfcaresults_.minPhi};
+	
+	sliderPhi.minimum=phi_varphi;
+	sliderPhi.maximum=0;
+	sliderPhi.setValue(phi_varphi);
+	
+	
+	
+	plotFCA(700,500,null);
+	redraw_phi_varphi_values(phi_varphi);	
+	$("#geneinfo_div").hide();
+	extern_selected_node(null);
+	change_max_min_plus_phi();
+};
+
+function min_plus_show(){ //select checkbutton MinPlus
+	max_min_plus=false;
+	url_phi="${minplus_url}/";	
+	$("#max_min_plus_attributes").find('option').remove();
+	$("#max_min_plus_objects").find('option').remove();
+	
+	
+	eq_phi_varphi="Φ"; //varphi
+	download_url='${min_plus_download_url}/';
+	$("#max_min_plus_def").html('<spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_desc_minplus"/>');
+	
+	
+	phi_varphi=0;
+	sliderPhi.minimum=0;	
+	sliderPhi.maximum=${kfcaresults_.maxVarPhi};
+	sliderPhi.setValue(0)
+	
+	
+	
+	plotFCA(700,500,null);
+	redraw_phi_varphi_values(phi_varphi);
+	$("#geneinfo_div").hide();
+	extern_selected_node(null);
+	change_max_min_plus_phi();
+};
+
+
+
+
+function change_max_min_plus_phi(){		//Selected new phi
+	
+	phi_varphi=sliderPhi.value;
+		
+	var url=url_phi+phi_varphi;
+	$.getJSON(url,function(data){
+		json_data=data;
+		//$("#num_concepts_txt").show();
+		$("#num_concepts_txt").text(json_data.numconcepts+" <spring:message code="label_es_uc3m_tsc_kfcatools_kfcaresults_concepts"/>");
+		plotFCA(700,500,json_data.graph);
+	
+		$("#matrix_download_id").find("a").attr("href", download_url+phi_varphi);
+		$("#matrix_download_id").show();
+	});
+
+	
+	
+	
+	
+}
+
+//<![CDATA[
+           
+function extern_selected_node(nodeid){
+	
+	if (nodeid==null){
+		if (floating_tooltip_drag_div!=null) floating_tooltip_drag_div.hide();
+		return;
+	}
+	
+	
+	if (floating_tooltip_drag_div==null){
+		var tooltip_drag_div = dojo.byId("tooltip_drag_div");
+		   
+		floating_tooltip_drag_div = new dojox.layout.FloatingPane({
+		       title: "",
+		       resizable: true,
+		       dockable: false,
+		       constrainToContainer: false,
+		       close: function (){floating_tooltip_drag_div.hide();},
+		       style: "width:260px;height:150px;background-color: #A9E2F3;opacity:0.8;z-index:100;"       
+		   }, tooltip_drag_div);
+		   
+		floating_tooltip_drag_div.startup();		
+	}
+		
+	floating_tooltip_drag_div.show();	
+	var idx=0;
+	for (i=0;i<json_data.graph.fca.length;i++){
+		if (json_data.graph.fca[i].id==nodeid){
+			idx=i;
+			break;
+		}
+	}
+	
+	numObjs=json_data.graph.fca[idx].n;
+	
+	var attrnames=json_data.graph.attrnames;
+	var intentTxt="";
+	var k=0;
+	var j=nodeid;
+	while(j!=0){
+		if (j%2==1){						
+			if (intentTxt==""){
+				intentTxt=attrnames[k];	
+			}else{
+				intentTxt=intentTxt+", "+attrnames[k];
+			};						
+		}
+		k++;
+		j=j>>1;
+	}
+	floating_tooltip_drag_div.titleNode.textContent=numObjs+" ${objname}s";
+	
+	var max_min_plus_attribute_id=dojo.byId("max_min_plus_attribute_id");	
+	max_min_plus_attribute_id.textContent=intentTxt;
+	attrid=nodeid;
+	
+	$("#matrix_concept_id").attr("href", "${concept_download_url}?phi="+phi_varphi+"&max="+max_min_plus+"&attrid="+nodeid);
+	
+	change_max_min_plus_attribute(nodeid);
+	
+	
+}
+
+
+
+
+function change_max_min_plus_attribute(attrid){ //Selected new attributes
+	
+	var url=url_phi+"/"+phi_varphi+"/"+attrid;
+	$.getJSON(url,function(data){
+		clean_gene_info();
+		
+		$("#max_min_plus_objects").find('option').remove();
+
+		var o=data.o;
+		var i,objTxt;
+		var geneList=$("#max_min_plus_objects");
+		
+		var opt=new Option("Choose the ${objname}","-");			
+		geneList.append(opt);
+		
+		for (i=0;i<o.length;i++){
+			objTxt=o[i];
+			opt=new Option(objTxt,objTxt);			
+			geneList.append(opt);			
+		};	
+		
+	});	
+}
+
+function change_gene(){ //Selected new gene
+	var gene;
+	$("#max_min_plus_objects option:selected").each(function () {
+        gene = $(this).attr('value');
+      });
+	if (gene=="-"){
+		clean_gene_info();
+		return;
+	}
+	show_gene_info(gene);	
+}
+
+function change_object(){ //Selected new object
+	$("#max_min_plus_objects option:selected").each(function () {
+        obj = $(this).attr('value');
+      });
+	if (obj=="-"){
+		return;
+	}		
+	
+	$("#div_detailed_info").show(1000);
+	fetch_range_info(${kfcaresults_.id },obj, max_min_plus);
+	
+}
+	
+function show_gene_info(gene){
+	clean_gene_info();
+		
+	var url="${genetools_url}"+"/geneinfo/"+"${kfcaresults_.microArrayType}"+"/"+gene;
+	$.getJSON(url,function(data){
+		
+		function getGoTable(jsonGO){
+			if (jsonGO==null){				
+				return "";
+			}
+									
+			var outHTML="<table class='tableGO'>";
+			outHTML+="<tr><th>Accession</th><th>Definition</th></tr>";
+			
+			var i;
+			for (i=0;i<jsonGO.length;i++){
+				outHTML+="<tr>";
+				var goid="GO:"+jsonGO[i].goID;
+				outHTML+="<td><a href='http://amigo.geneontology.org/cgi-bin/amigo/term_details?term="+goid+"' target='_blank'>"+goid+"</td>";
+				outHTML+="<td>"+jsonGO[i].description+"</td>";				
+				outHTML+="</tr>";
+			}
+			
+			outHTML+="</table>";
+			return outHTML;
+		}
+		
+		function getAGIHtml(jsonAGI){
+			if (jsonAGI==null) return "";
+			if (jsonAGI=="---") return "";
+			
+			var url="http://www.arabidopsis.org/servlets/Search?type=general&search_action=detail&method=1&show_obsolete=F&sub_type=gene&SEARCH_EXACT=4&SEARCH_CONTAINS=1&name=";
+			
+			var agiName=jsonAGI[0];
+			var agiURL=url+agiName;
+			var outHTML="<a href='"+agiURL+"' target=_blank'>"+agiName+"</a>";
+			var i;
+			for (i=1;i<jsonAGI.length;i++){
+				agiName=jsonAGI[i];
+				agiURL=url+agiName;
+				outHTML+=",&nbsp;<a href='"+agiURL+"' target=_blank'>"+agiName+"</a>";
+			}
+			return outHTML;
+		}
+		
+		
+
+		function getSymbolHtml(jsonSymbol){
+			if (jsonSymbol==null) return "";
+			if (jsonSymbol=="---") return "";
+			
+			var url_part1="http://www.ncbi.nlm.nih.gov/gene?term=${kfcaresults_.microArrayType.specieName}%5BOrganism%5D%20AND%20(";
+			var url_part2="%5BGene%20Name%5D)";
+			
+			var symbolURL=url_part1+jsonSymbol+url_part2;
+			var outHTML="<a href='"+symbolURL+"' target=_blank'>"+jsonSymbol+"</a>";
+			
+			return outHTML;
+		}
+		
+		
+		
+				
+				
+		$("#geneinfo_div").show();
+		
+		fetch_range_info(${kfcaresults_.id },gene, max_min_plus);
+		
+		if (data.probeSetID==null){
+			$("#main_probe_set_row_id").hide();
+		}else{
+			$("#main_probe_set_row_id").show();
+			$("#main_probe_set_id").text(data.probeSetID);
+		}
+		$("#geneid").text(data.probeSetID);
+		
+		$("#main_gene_title_id").text(data.geneTitle);
+		
+		if (data.probeSetID==null){
+			$("#main_target_description_row_id").hide();
+		}else{
+			$("#main_target_description_row_id").show();
+			$("#main_target_description_id").text(data.description);
+		}
+		if (data.agiName==null) {
+			$("#main_agi_row_id").hide()
+		}else{
+			$("#main_agi_row_id").show()
+			$("#main_agi_id").html(getAGIHtml(data.agiName));
+		}
+		
+		if (data.swissProt==null) {
+			$("#main_swiss_prot_row_id").hide()
+		}else{
+			$("#main_swiss_prot_row_id").show()
+			$("#main_swiss_prot_id").text(data.swissProt);
+		}
+		
+		if (data.flybase==null) {
+			$("#main_flybase_row_id").hide()
+		}else{
+			$("#main_flybase_row_id").show()
+			$("#main_flybase_id").text(data.flybase);
+		}
+		
+		$("#main_symbol_id").html(getSymbolHtml(data.geneSymbol));		
+        $("#main_go_bp_id").html(getGoTable(data.goBP));
+        $("#main_go_cc_id").html(getGoTable(data.goCC));
+        $("#main_go_mf_id").html(getGoTable(data.goMF));
+        $("#main_pathway_id").text(data.pathway);
+		
+		
+		$("#probe_set_id").text(data.probeSetID);
+		$("#genesymbol_id").html(getSymbolHtml(data.geneSymbol));	
+        $("#gene_chip_array_id").text(data.geneChipArray);
+        $("#species_scientific_name_id").text(data.speciesScientificName);
+        $("#annotation_date_id").text(data.annotationDate);
+        $("#sequence_type_id").text(data.sequenceType);
+        $("#sequence_source_id").text(data.sequenceSource);
+        $("#transcript_id").text(data.transcriptID);
+        $("#target_description_id").text(data.description);
+        $("#representative_public_id").text(data.representativePublicID);
+        $("#archival_unigene_cluster_id").text(data.archivalUnigeneCluster);
+        $("#unigene_id").text(data.uniGeneID);
+        $("#genome_version_id").text(data.genomeVersion);
+        $("#alignments_id").text(data.alignments);
+        $("#gene_title_id").text(data.geneTitle);
+        $("#gene_symbol_id").text(data.geneSymbol);
+        $("#chromosomal_location_id").text(data.chromosomalLocation);
+        $("#unigene_cluster_id").text(data.uniGeneClusterType);
+        $("#ensembl_id").text(data.ensembl);
+        $("#entrez_gene_id").text(data.entrezGene);
+        $("#swissprot_id").text(data.swissProt);
+        $("#ec_id").text(data.EC);
+        $("#omim_id").text(data.OMIM);
+        $("#refseq_protein_id").text(data.refSeqProteinID);
+        $("#refseq_transcript_id").text(data.refSeqTranscriptID);
+        $("#flybase_id").text(data.flybase);
+        $("#agi_id").html(getAGIHtml(data.agiName));      
+        $("#wormbase_id").text(data.wormBase);
+        $("#mgi_name_id").text(data.MGIName);
+        $("#rgd_name_id").text(data.RGDName);
+        $("#sgd_accesion_number_id").text(data.SGDAccesionNumber);
+        $("#go_bp_id").html(getGoTable(data.goBP));
+        $("#go_cc_id").html(getGoTable(data.goCC));
+        $("#go_mf_id").html(getGoTable(data.goMF));
+        $("#pathway_id").text(data.pathway);
+        $("#interpro_id").text(data.interPro);
+        $("#trans_membrane_id").text(data.transMembrane);
+        $("#qtl_id").text(data.QTL);
+        $("#annotation_description_id").text(data.annotationDescription);
+        $("#annotation_transcript_id").text(data.annotationTranscriptCluster);
+	});
+	
+}
+
+function clean_gene_info(){
+	
+	$("#main_probe_set_id").text("");
+	$("#geneid").text("");
+	
+	$("#main_gene_title_id").text("");
+	$("#main_target_description_id").text("");
+	$("#main_agi_id").text("");
+	$("#main_symbol_id").text("");		
+    $("#main_go_bp_id").text("");
+    $("#main_go_cc_id").text("");
+    $("#main_go_mf_id").text("");
+    $("#main_pathway_id").text("");
+	
+	$("#probe_set_id").text("");
+    $("#gene_chip_array_id").text("");
+    $("#species_scientific_name_id").text("");
+    $("#annotation_date_id").text("");
+    $("#sequence_type_id").text("");
+    $("#sequence_source_id").text("");
+    $("#transcript_id").text("");
+    $("#target_description_id").text("");
+    $("#representative_public_id").text("");
+    $("#archival_unigene_cluster_id").text("");
+    $("#unigene_id").text("");
+    $("#genome_version_id").text("");
+    $("#alignments_id").text("");
+    $("#gene_title_id").text("");
+    $("#gene_symbol_id").text("");
+    $("#chromosomal_location_id").text("");
+    $("#unigene_cluster_id").text("");
+    $("#ensembl_id").text("");
+    $("#entrez_gene_id").text("");
+    $("#swissprot_id").text("");
+    $("#ec_id").text("");
+    $("#omim_id").text("");
+    $("#refseq_protein_id").text("");
+    $("#refseq_transcript_id").text("");
+    $("#flybase_id").text("");
+    $("#agi_id").html("");
+    $("#wormbase_id").text("");
+    $("#mgi_name_id").text("");
+    $("#rgd_name_id").text("");
+    $("#sgd_accesion_number_id").text("");
+    $("#go_bp_id").html("");
+    $("#go_cc_id").html("");
+    $("#go_mf_id").html("");
+    $("#pathway_id").text("");
+    $("#interpro_id").text("");
+    $("#trans_membrane_id").text("");
+    $("#qtl_id").text("");
+    $("#annotation_description_id").text("");
+    $("#annotation_transcript_id").text("");
+
+}
+
+function show_geneid(){
+	var geneid=document.getElementById('geneid').value;
+	show_gene_info(geneid);
+}
+
+function show_GOpValue(){	
+	show_gopvalue(${kfcaresults_.id },phi_varphi,attrid,max_min_plus);
+	if (floating_tooltip_drag_div.hide()!=null) floating_tooltip_drag_div.hide();
+}
+
+function show_gene_more_info(){	
+	window.scrollTo(0,0);
+	$("#div_detailed_info").show(1000);
+	if (floating_tooltip_drag_div.hide()!=null) floating_tooltip_drag_div.hide();
+}
+
+function change_min_plus_varphi(){
+	alert("Minplus change")
+}
+function downloadNumConcepts(){
+	var csvDownload= "data:text/csv;charset=utf-8,";
+	for (var i=0;i<maxPlus.length; i++){
+		csvDownload+="maxPlus,"+maxPlus[i][0]+","+maxPlus[i][1]+"\n";
+	}
+	for (var i=0;i<minPlus.length; i++){
+		csvDownload+="minPlus,"+minPlus[i][0]+","+minPlus[i][1]+"\n";
+	}
+	var encodedUri = encodeURI(csvDownload);
+	window.open(encodedUri);
+}
+$(function () {
+     
+// ]]><c:forEach items="${kfcaresults_.minPlusNumConcepts}" var="val">
+    	minPlus.push([${val[0]},${val[1]}]);
+	</c:forEach>
+        <c:forEach items="${kfcaresults_.maxPlusNumConcepts}" var="val">
+		maxPlus.push([${val[0]},${val[1]}]);
+	</c:forEach>	
+	
+	$.plot($("#placeholder"), 
+			//[ {label: "Min Plus", data: minPlus, points: {show: true}},
+			  [ {label: "Min Plus", data: minPlus},
+			  {label: "Max Plus", data: maxPlus} ],
+			{
+		  	xaxis: { 			    			   
+			    ticks:15
+			  }
+			});
+});
+
+ 
+ </script>
+    <page:show id="ps_es_uc3m_tsc_kfca_explore_KFCAResults" object="${kfcaresults_}" path="/kfcaresultses" render="false" z="user-managed">
+        <field:display date="true" dateTimePattern="${KFCAResults__startdate_date_format}" field="startDate" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_startDate" object="${kfcaresults_}" z="eYM7N6whikRERG6/14rDD37sXFw="/>
+        <field:display date="true" dateTimePattern="${KFCAResults__stopdate_date_format}" field="stopDate" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_stopDate" object="${kfcaresults_}" z="XqnQattCSyUeFw5/HdNYREVSkRI="/>
+        <field:display field="processedMatrix" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_processedMatrix" object="${kfcaresults_}" z="6qRm0j3obNPckda+fZgS/HLOmfE="/>
+        <field:display field="minPlusNumConcepts" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_minPlusNumConcepts" object="${kfcaresults_}" z="TMJfPfYEUk0ygbAloQxST2wu5Ks="/>
+        <field:display field="maxPlusNumConcepts" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_maxPlusNumConcepts" object="${kfcaresults_}" z="60xGSxy88eNq1g+/liVoSB6qJqA="/>
+        <field:display field="colNames" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_colNames" object="${kfcaresults_}" z="r0u38AYReooV4luSosmVcrfDkIs="/>
+        <field:display field="rowNames" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_rowNames" object="${kfcaresults_}" z="7ytwZNRO5yyhvXsW6rNv6K9dj30="/>
+        <field:display field="microArrayType" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_microArrayType" object="${kfcaresults_}" z="4h/FyuHaxXI9wcyME/YzjOpzNuI="/>
+        <field:display field="objectExplored" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_objectExplored" object="${kfcaresults_}" z="bSprlpkuQFJgPkViBxM4iFCH72g="/>
+        <field:display field="logger" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_logger" object="${kfcaresults_}" z="zx5QAsl8w6eDLU9fKVHHNzrsMKM="/>
+        <field:display field="geneInfo" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_geneInfo" object="${kfcaresults_}" z="VJw6GXGkUJ1nExuhX6IMh+OMGxc="/>
+        <field:display field="preprocessorId" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_preprocessorId" object="${kfcaresults_}" z="+kqVnOSvHjeNw3SZYtBT1O5RAiI="/>
+        <field:display field="explorationType" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_explorationType" object="${kfcaresults_}" z="Tzn/w0nfxL8fUIQxFJyIPawuDy0="/>
+        <field:display field="geneClusterAnalysis" id="s_es_uc3m_tsc_kfca_explore_KFCAResults_geneClusterAnalysis" object="${kfcaresults_}" z="EYrQg1f9cQgEOEmYj4uuAwAX8jo="/>
+    </page:show>
+</div>

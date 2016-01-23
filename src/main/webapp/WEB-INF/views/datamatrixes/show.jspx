@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:form="http://www.springframework.org/tags/form" version="2.0">
+	<util:load-graphs/>
+    <util:load-maths/>
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/resources/images/show.png" var="showIcon"/>
+    <spring:url value="/preprocessors/" var="show_preproccessor_url"/>
+    <spring:url value="download/${datamatrix.id }" var="dataset_download_url"/>
+    <div id="normal">
+        <h2><spring:message code="label_es_uc3m_tsc_gene_datamatrix"/><i> ${datamatrix.name}</i> details</h2>
+        <div class="showinfo">
+            <b>Description:</b>
+            <p>${datamatrix.description}</p>
+        </div>
+        <c:if test="${cookie.mode.value=='kfca'}">     		
+	        <div class="showinfo">
+	            <b>Size:</b>
+	            <br/>
+	            ${datamatrix.numRows} objects x ${datamatrix.numCols} attributes     		     	
+	     	</div>	        
+	        <div class="showinfo">
+	        <b>Matrix values</b> (<a alt="textoAlt" href="${dataset_download_url}" title="Titulo">Download </a>) :<br/>
+	            <canvas id="datamatrix_canvas">
+	                <!-- ... -->
+	            </canvas>
+	        </div>
+	        <div class="showinfo">
+	        <b>Density estimation</b>     
+	            <div id="placeholder" style="width:600px;height:300px;" version="2.0">
+            		<!-- required for FF3 and Opera -->
+        		</div>
+	            
+	        </div>
+	        <div class="showinfo">
+	         <p>
+	         You can have different analysis over these  datasets based on different preprocessor. This preprocesor stage is necessary to normalize the raw input matrix from the dataset.
+	         </p>
+	         <p>
+	         Most of the times the objects are not comparable among them because they can come from different origins.
+	         Thus it is required to normalize the value of each object to make it comparable among them.
+	         <br/>
+         	 The normalization consists in applying the next formula: $$n_{ij}=log(x_{ij}/rn_i)$$ where $$x_{ij}$$ is the expression of <em>gene i</em> at the <em>experiment j</em> and $$rn_i$$ is the normalization value which can be one of the following types:  
+	         </p>
+	         </div>
+         </c:if>
+	    
+        
+        <c:if test="${cookie.mode.value!='kfca'}">     		
+	        <div class="showinfo">
+	            <b>Size:</b>
+	            <br/>
+	            <c:if test="${datamatrix.microArrayType.microarray}">     	
+	            ${datamatrix.numRows} probesets x ${datamatrix.numCols} experiments
+	            </c:if>
+	            <c:if test="${!datamatrix.microArrayType.microarray}">     	
+	            ${datamatrix.numRows} genes x ${datamatrix.numCols} experiments
+	            </c:if>     		     	     		     	
+	     	</div>
+	        <div class="showinfo">
+	            <b>Species:</b>
+	            <br/>
+	         		${datamatrix.microArrayType.specieName}
+	         	</div>
+	        <div class="showinfo">
+	            <b>InputData:</b>
+	            <br/>
+	         	${datamatrix.microArrayType.labelName}
+	         </div>
+	        <div class="showinfo">
+	        <b>Gene expression levels</b> (<a alt="textoAlt" href="${dataset_download_url}" title="Titulo">Download </a>) :<br/>
+	            <canvas id="datamatrix_canvas">
+	                <!-- ... -->
+	            </canvas>
+	        </div>
+	        <div class="showinfo">
+	        <b>Density estimation</b>     
+	            <div id="placeholder" style="width:600px;height:300px;" version="2.0">
+            		<!-- required for FF3 and Opera -->
+        		</div>
+	            
+	        </div>
+	        <div class="showinfo">
+	         <p>
+	         You can have different analysis over these  datasets based on different preprocessor. This preprocesor stage is necessary to normalize the raw input matrix from the dataset.
+	         </p>
+	         <p>
+	         For a given experiment each gene will work on different levels of gene expression, this makes the comparison among different genes impossible.
+	         Thus it is required to normalize the expression of each gene to make it comparable among them.
+	         <br/>
+	         The normalization consists in applying the next formula where $$x_{ij}$$ is the expression of <em>gene i</em> at the <em>experiment j</em>, $$xn_i$$ is the normalized output:  
+	         </p>
+	        </div>
+         </c:if>
+	    
+         
+         <div class="showinfo">
+         <ul>
+         
+         <c:if test="${cookie.mode.value=='kfca'}">     
+	         <c:forEach items="${preprocessorenums}" var="p">         
+	         <li>
+	         	<c:out value="${p.mathJSFormula}"/>
+	         </li>         
+	         </c:forEach>
+		</c:if>
+	    
+        
+        <c:if test="${cookie.mode.value!='kfca'}">     
+	         <c:forEach var="number" begin="0" end="${fn:length(preprocessorenums)-1}">         
+	         <li>
+	         	<c:out value="${preprocessorenums[number].mathJSFormula}"/>
+	         </li>         
+	         </c:forEach>
+	     </c:if>
+         </ul>   
+            <p>
+         
+         <c:choose>
+         	<c:when test="${fn:length(datamatrix.preprocessor) > 1}">         
+	         	For this dataset there are ${fn:length(datamatrix.preprocessor)} different analysis with different preprocessors.<br/>Please choose one:
+	        </c:when>
+	        <c:when test="${fn:length(datamatrix.preprocessor) == 1}">         
+	         	For this dataset there is one analysis with the following preprocessor:
+	        </c:when>
+	        <c:otherwise>
+	     		No preprocessor has yet been created.   
+	        </c:otherwise>
+	     </c:choose>
+         </p>
+            <div id="s_es_uc3m_tsc_gene_DataMatrix_preprocessor">
+                <table>
+                    <c:if test="${fn:length(datamatrix.preprocessor)&gt;0}">
+                        <tr>
+                            <th>
+                                <spring:message code="label_es_uc3m_tsc_gene_preprocessor_name"/>
+                            </th>
+                            <th>
+                                <spring:message code="label_es_uc3m_tsc_gene_preprocessor_algorithm"/>
+                            </th>
+                            <th>
+                                <spring:message code="label_es_uc3m_tsc_gene_preprocessor_geneexpressiontype"/>
+                            </th>                            
+                            <th>
+                                <spring:message code="label_es_uc3m_tsc_gene_preprocessor_creationdate"/>
+                            </th>
+                            <th>
+                                <!-- XX -->
+                            </th>
+                        </tr>
+                    </c:if>
+                    <c:forEach items="${datamatrix.preprocessor}" var="p">
+                        <tr>
+                            <td>
+                                <a href="${show_preproccessor_url}${p.id}">${p.name}</a>
+                            </td>
+                            <td>
+                                <c:out value="${p.preprocessorType.mathJSFormula}"/>
+                            </td>
+                            <td>                            
+                                <c:out value="${p.geneExpressionType.geneExpName}"/>
+                            </td>
+                            <td>
+                                <c:out value="${p.creationDate}"/>
+                            </td>
+                            <td>
+                                <a class="cssbutton cssbuttonsmall posright" href="${show_preproccessor_url}${p.id}">Details</a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </table>
+                <spring:url value="addPreprocessor/${datamatrix.id}" var="add_preproccessor_url"/>
+                <!-- 
+            <spring:message arguments="${typeNamePlural}" code="entity_list_all" htmlEscape="false" var="list_label"/>
+            <input onclick="javascript:location.href='${add_preproccessor_url}'" style="margin-left:205px; margin-top:5px;" type="button" value="Add Preprocessor"/>
+            <a alt="textoAlt" href="${add_preproccessor_url}" title="Titulo">                
+            </a>
+             -->
+                <br/>
+                <sec:authorize access="isAnonymous()">
+        <p>You need to be logged to create a preprocessor analysis</p> 
+		</sec:authorize>
+                <br/>
+                <sec:authorize access="isAuthenticated()">
+                    <a class="cssbutton cssbuttonmedium" href="${add_preproccessor_url}">Add Preprocessor</a>                    
+                </sec:authorize>     
+             </div>
+     </div>
+    <sec:authorize access="isAuthenticated()">
+        <div class="quicklinks posright">            		   
+     	<spring:url value="/datamatrices/${datamatrix.id}" var="delete_form_url" />
+     	<spring:url value="/resources/images/delete.png" var="delete_image_url" />
+     	<form:form action="${delete_form_url}" method="DELETE">
+       		<spring:message arguments="${datamatrix.name}"  code="entity_delete" var="delete_label" htmlEscape="false" />
+       		<c:set var="delete_confirm_msg">
+         		<spring:escapeBody javaScriptEscape="true">
+           		<spring:message code="entity_delete_confirm" />
+         		</spring:escapeBody>
+       		</c:set>
+			<input alt="${fn:escapeXml(delete_label)}" class="image" src="${delete_image_url}" title="${fn:escapeXml(delete_label)}" type="image" value="${fn:escapeXml(delete_label)}" onclick="return confirm('${fn:escapeXml(delete_confirm_msg)}');" />
+     	</form:form>
+  		</div>
+		<br/>	                      
+    </sec:authorize>
+                
+        
+    </div>
+    <script type="text/javascript"> 
+      //<![CDATA[        
+        ${datamatrix.canvas}       
+     // ]]>
+      
+        var hist = [];
+        <c:forEach items="${datamatrix.histogram.histogram}" var="val">  
+        hist.push([${val[0]}, ${val[1]}]);    	    	    	
+	    </c:forEach>
+	    $.plot($("#placeholder"), 
+				[ hist ],
+				{
+			  	xaxis: { 			    			   
+				    ticks:11
+				  }
+				});
+      
+      </script>
+    <page:show id="ps_es_uc3m_tsc_gene_DataMatrix" object="${datamatrix}" path="/datamatrices" z="user-managed" render="false">
+        <field:display field="name" id="s_es_uc3m_tsc_gene_DataMatrix_name" object="${datamatrix}" z="fHvE4vdY9frHHekpQGMZhmz3j9s="/>
+        <field:display field="description" id="s_es_uc3m_tsc_gene_DataMatrix_description" object="${datamatrix}" z="0vD/bo667axMSfh1JWFil808i00="/>
+        <field:display field="colNames" id="s_es_uc3m_tsc_gene_DataMatrix_colNames" object="${datamatrix}" z="IL/Vrsc9NVpEAQLWuCsF+AZ4Vc0="/>
+        <field:display field="rowNames" id="s_es_uc3m_tsc_gene_DataMatrix_rowNames" object="${datamatrix}" z="FcPi/aOoidFV0qU5CfYpU2juJUc="/>
+        <field:display field="rawData" id="s_es_uc3m_tsc_gene_DataMatrix_rawData" object="${datamatrix}" z="6vjCYaHEWGdNxnwipLWVPWZD4So="/>
+        <field:display field="processFiles" id="s_es_uc3m_tsc_gene_DataMatrix_processFiles" object="${datamatrix}" z="daRkXZLflu7Klpc8r1JBat2CyIM="/>
+        <field:display field="celIDFiles" id="s_es_uc3m_tsc_gene_DataMatrix_celIDFiles" object="${datamatrix}" z="qx5zBaNwsYnQFV4VHprAQ1GarWM="/>
+        <field:display field="microArrayType" id="s_es_uc3m_tsc_gene_DataMatrix_microArrayType" object="${datamatrix}" z="0hX+r3oWcSEB05MSCvSN8JBCI44="/>
+    </page:show>
+</div>

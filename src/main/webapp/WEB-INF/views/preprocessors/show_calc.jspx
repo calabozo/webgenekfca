@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  <jsp:output omit-xml-declaration="yes"/>
+  <spring:message code="label_preprocessors_show_calc" htmlEscape="false" var="title"/>
+  <util:panel id="title" title="${title}">
+  <util:load-jquery/>
+  <spring:url value="/resources/images/progressbar" var="progressbar_img" />
+  <style>
+	.ui-progressbar-value { background-image: url(${progressbar_img}/pbar-ani.gif); }
+  </style>
+  <div style="width: 300px; height: 10px;" id="progressbar">
+  <!-- Nanan -->
+  </div>
+  
+  </util:panel>
+  
+  <page:show id="ps_es_uc3m_tsc_util_ThreadProcessor" object="${processor}" path="/threadprocessors" z="user-managed">
+       	<field:display field="ratioDone" id="s_es_uc3m_tsc_util_ThreadProcessor_ratioDone" object="${processor}" z="user-managed"/>                            
+  </page:show>
+   
+
+  
+  <spring:url value="/preprocessors/status/${preprocessor.id }" var="status_url" />
+  <script type="text/javascript">
+  $(document).ready(function() {	    	     	    
+ 	    refreshProgressBar();
+	});
+  
+  
+  
+  function refreshProgressBar(){
+	  $.get("${status_url}",function(txt){
+		  var obj = jQuery.parseJSON(txt);
+		  
+		  $("#progressbar").progressbar({value: obj.ratio});
+		  if (obj.ratio==100){
+			  $(".ui-progressbar-value").css("background-image","url(/)");
+		  }
+	  });
+	  setTimeout("refreshProgressBar()",1000);
+  }
+  
+  </script>
+   
+   
+</div>

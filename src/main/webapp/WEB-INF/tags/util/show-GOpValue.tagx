@@ -1,0 +1,207 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<spring:url value="/resources/js/fcagraph/fcagraph_sparse_phis.js" var="fcagraph_url" />
+	<spring:url value="/resources/dijit/themes/tundra/images/tabClose.png" var="closeImg"/>
+	<spring:url value="/kfcaresultses/gopvalues_maxplus/" var="maxplus_gopvalue_url"/>
+	<spring:url value="/kfcaresultses/gopvalues_minplus/" var="minplus_gopvalue_url"/>
+	<spring:url value="/kfcaresultses/gopvalues_status/" var="status_gopvalue_url"/>
+	
+	<spring:url value="/kfcaresultses/csv_go_minplus_fca/${kfcaresults_.id }/" var="go_minplus_fca_url"/>
+    <spring:url value="/kfcaresultses/csv_go_maxplus_fca/${kfcaresults_.id }/" var="go_maxplus_fca_url"/>
+      
+    <script src="${fcagraph_url}" language="javascript" type="text/javascript" ><!-- required for FF3 and Opera --></script>        
+
+	<c:if test="${kfcaresults_.isGeneExpression}">
+            <spring:message code="global_objtype_gene" htmlEscape="false" var="objname"/>
+        </c:if>
+        <c:if test="${!kfcaresults_.isGeneExpression}">
+            <spring:message code="global_objtype_probeset" htmlEscape="false" var="objname"/>
+    </c:if>
+    
+	<div id="div_GOpValue_info" style="width:100%;min-height:5000px;top:0px;left:0px;position:absolute;background-color:rgba(0, 0, 0, 0.9);z-index:256;" onclick="close_gopValueview();" >
+		<div id="GOpValue_detailed_div" style="width:80%;top:100px;left:100px;position: absolute;-webkit-border-radius: 15px;-moz-border-radius: 15px;border-radius: 15px;background-color:#FFF;">				
+			<div id="close_GOpValue_div" style="float: right;cursor: pointer;margin-right: 4px;" onclick="close_gopValueview();" >			
+			<img src="${closeImg}"/>
+			</div>
+			
+			<div style="margin-top:50px; margin-left:2em;margin-right:50px;" >
+		This view shows Gene Ontology information about the selected cluster.<br/>
+		The following links provide with three different CSV files where the rows are linked to a ${objname} and the columns are the gene ontologies each ${objname} belongs. 
+		A 1 means that the ${objname} belongs to that particular ontology. Each file will provide information about <i>Biological Process</i>, <i>Molecular Function</i> or <i>Cellular Component</i>.
+		<br/>
+		<a href="javascript:downloadGOBP();" style="margin: 0.7em 0 1.2em 2em;">Download BP</a>
+		<a href="javascript:downloadGOMF();" style="margin: 0.7em 0 1.2em 2em;">Download MF</a>
+		<a href="javascript:downloadGOCC();" style="margin: 0.7em 0 1.2em 2em;">Download CC</a>
+		<br/>
+		<br/>
+		This part shows a list of Gene Ontology terms sortered by their p-value. This p-value shows the probability, measured from 0 to 1, that the given Gene Ontology term has appeared in the cluster 
+		 by chance. This can be used as a meassure of how reliable this cluster is, thus lower values are better. 		 
+		<br/>
+		The following table shows the most probable GO terms sorted by their probability of random appearance. The columns are the following:
+		<br/>
+		<ul>
+		<li><i>GO term</i>:Gene ontology term accession name.<br/></li>
+		<li><i>Name</i>: GO name.<br/></li>
+		<li><i>Ratio cluster/total</i>: Number of times this GO term appears in the cluster compared with the times that appears in the microarray.<br/></li>		
+		<li><i>p-value</i>: Probability of random appearance.<br/></li>
+		</ul>
+		<br/>				
+		<b>Cluster size</b>: <span id="gop_cluster_size"><!-- xx --></span> ${objname}s
+		<br/>
+		<b>Cluster attributes</b>: <span id="gop_cluster_id"><!-- xx --></span>
+		<br/>
+		<c:if test="${kfcaresults_.isGeneExpression}">
+		 	<span><b>Number of genes in microarray</b>: ${fn:length(kfcaresults_.rowNames)}</span>			
+		</c:if>
+		<c:if test="${!kfcaresults_.isGeneExpression}">
+			<span><b>Number of probesets in microarray</b>: ${fn:length(kfcaresults_.rowNames)}</span>			
+		</c:if>		
+		<br/>
+		<a id="downloadgopvalue" href="javascript:downloadGOpValue();" style="margin: 0.7em 0 1.2em 2em;">Download</a>
+			<div id="progressbar" style="width: 200px; height: 10px;">
+                <!-- Nanan -->
+            </div>
+		   	<table id="GOpValue_table" style="max-width:778px;word-wrap: break-word;margin-bottom: 50px;">
+		   	<tr> 
+		   	<th>GO term</th><th>Description</th><th>Ontology</th><th>Ratio<br/>cluster/total</th><th>p-value</th><th>${objname}</th>
+		   	</tr>
+		   	
+		   	
+		   	</table>
+		   	
+		   	</div>		   	
+		</div>
+	</div>
+
+    
+<script type="text/javascript">
+
+//<![CDATA[
+    var status_pvalue=-1;
+	$("#GOpValue_detailed_div").click(function(event){
+		  event.stopImmediatePropagation();
+	});
+	$("#div_GOpValue_info").hide();
+	$("#downloadgopvalue").hide();
+	
+	function close_gopValueview(){
+		status_pvalue=-1;
+		$('#div_GOpValue_info').hide();		
+	}
+	
+	function show_gopvalue(id,phi,attrid,max_min_plus){
+		var url;
+		document.body.scrollTop = document.documentElement.scrollTop = 0;
+		$("#div_GOpValue_info").show(1000);
+		if (max_min_plus){
+			url="${maxplus_gopvalue_url}"+id+"/"+phi+"/"+attrid;
+		}else{
+			url="${minplus_gopvalue_url}"+id+"/"+phi+"/"+attrid;
+		}
+		
+		var attrnames=json_data.graph.attrnames;
+		var intentTxt="";
+		var k=0;
+		var j=attrid;
+		while(j!=0){
+			if (j%2==1){						
+				if (intentTxt==""){
+					intentTxt=attrnames[k];	
+				}else{
+					intentTxt=intentTxt+", "+attrnames[k];
+				};						
+			}
+			k++;
+			j=j>>1;
+		}
+		$('#gop_cluster_id').text(intentTxt);
+		$('#gop_cluster_size').text(numObjs);
+		$("#GOpValue_table").find("tr:gt(0)").remove();
+		$('#GOpValue_table tr:last').after("<tr><td>Calculating pValues.</td><td>Please wait, this can take several minutes...</td><td><!-- xxx --></td><td><!-- xx --></td><td><!-- xx --></td></tr>");	   	
+		
+		$("#progressbar").show();
+		$.get(url,function(txt){
+			var obj = jQuery.parseJSON(txt);
+			status_pvalue=obj.pValueId;
+			checkpValue();
+		});
+	}
+	var csvPValueDownload;
+	
+	function downloadGOpValue(){
+		var encodedUri = encodeURI(csvPValueDownload);
+		window.open(encodedUri);
+	}
+	
+	function checkpValue(){
+		if (status_pvalue<0) return;
+		$.get("${status_gopvalue_url}"+status_pvalue,function(txt){
+			  var obj = jQuery.parseJSON(txt);
+			  $("#progressbar").progressbar({value: obj.ratio});
+			  
+			  if (obj.status=="done"){
+				  $("#progressbar").hide();
+				  $("#downloadgopvalue").show();
+				  $("#GOpValue_table").find("tr:gt(0)").remove();
+					var gopvalue=obj.data.go;		
+					
+					csvPValueDownload="data:text/csv;charset=utf-8,";
+					
+					for (var i=0; i<gopvalue.length; i++){
+						var goid="GO:"+gopvalue[i].g;
+						var desc=gopvalue[i].d;
+						var pvalue=gopvalue[i].p.toPrecision(5);
+						var numAppear=gopvalue[i].na;
+						var numTotal=gopvalue[i].nt;
+						var genes=gopvalue[i].elems;
+						var ontology=gopvalue[i].o;
+						
+						csvPValueDownload+=goid+","+desc+","+ontology+","+pvalue+","+numAppear+","+numTotal+","+genes+"\n";
+						
+						$('#GOpValue_table tr:last').after("<tr><td><a href='http://amigo.geneontology.org/cgi-bin/amigo/term_details?term="+goid+"' target='_blank'>"+goid+"</a></td><td>"+desc+"</td><td>"+ontology+"</td><td>"+numAppear+"/"+numTotal+"</td><td>"+pvalue+"</td><td><select id='pValueRow"+i+"' onclick='change_elem_pValue(this.options[this.selectedIndex].value)'></select></td></tr>");
+						for (var j=0;j<genes.length;j++){
+							$("#pValueRow"+i).append("<option value='"+genes[j]+"'>"+genes[j]+"</option>");
+						}
+					}			  				  				  
+			  }else if (obj.status==-1){
+				  $("#progressbar").hide();
+				  $("#message_info").html("There was an error while processing input files.<br/>The files were corrupt or may be you choose a wrong microarray type.");
+			  }else{
+				  setTimeout("checkpValue()",1000);
+			  }
+		  });
+	}
+	
+	function change_elem_pValue(elem_value){ //Selected new gene		
+		show_gene_info(elem_value);
+		show_gene_more_info();
+	}
+	
+	function downloadGOBP(){
+		var url;
+		if (max_min_plus)
+			url="${go_maxplus_fca_url}"+phi_varphi+"/"+attrid+"/BP";
+		else
+			url="${go_minplus_fca_url}"+phi_varphi+"/"+attrid+"/BP";
+		window.open(url);
+	}
+	function downloadGOCC(){
+		var url;
+		if (max_min_plus)
+			url="${go_maxplus_fca_url}"+phi_varphi+"/"+attrid+"/CC";
+		else
+			url="${go_minplus_fca_url}"+phi_varphi+"/"+attrid+"/CC";
+		window.open(url);
+	}
+	function downloadGOMF(){
+		var url;
+		if (max_min_plus)
+			url="${go_maxplus_fca_url}"+phi_varphi+"/"+attrid+"/MF";
+		else
+			url="${go_minplus_fca_url}"+phi_varphi+"/"+attrid+"/MF";
+		window.open(url);
+	}
+// ]]>	
+		
+</script>
+</jsp:root>
+

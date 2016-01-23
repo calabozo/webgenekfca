@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_es_uc3m_tsc_gene_Preprocessor" items="${preprocessors}" z="C4GaxzI2t4fvf3CSqGcqUv+x3DM=">
+        <table:table data="${preprocessors}" id="l_es_uc3m_tsc_gene_Preprocessor" path="/preprocessors" z="mffolrz16mzKRrJVTNr7/TB/Tsc=">
+            <table:column id="c_es_uc3m_tsc_gene_Preprocessor_name" property="name" z="yxZ6wd6ipCPczGxZ8JVwTMKIthM="/>
+            <table:column id="c_es_uc3m_tsc_gene_Preprocessor_preprocessorType" property="preprocessorType" z="azg8BnHacUh2W17is/OpvFWCQ5Y="/>
+            <table:column id="c_es_uc3m_tsc_gene_Preprocessor_dataMatrix" property="dataMatrix" z="2bGuPIa9AMu5uiPIvHaZINB4C9g="/>
+            <table:column id="c_es_uc3m_tsc_gene_Preprocessor_maxPhiToExplore" property="maxPhiToExplore" z="oihrZ+nzoUaB+iNKrUaVvYkG4Jw="/>
+            <table:column id="c_es_uc3m_tsc_gene_Preprocessor_groupName" property="groupName" z="ePwX7+RgiwnzhOaXVrmGcrV+xH0="/>
+            <table:column id="c_es_uc3m_tsc_gene_Preprocessor_groupId" property="groupId" z="bqonjexVUH6AxJ9RAZ6r7/mS37U="/>
+        </table:table>
+    </page:list>
+</div>

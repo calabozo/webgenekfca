@@ -1,0 +1,29 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:tiles="http://tiles.apache.org/tags-tiles" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" >  
+	
+	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
+	
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />  
+	<jsp:directive.page pageEncoding="UTF-8" /> 
+			
+	<head>
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=8" />	
+			
+		<util:load-scripts />
+		
+		<spring:message code="application_name" var="app_name" htmlEscape="false"/>
+		<title>Gene Expression clustering WebgeneKFCA based on K-Formal Concept Analysis</title>
+        <meta name="description" content="Gene expression clustering tool based on K-Formal Concept Analysis. Author: Jose Maria Gonzalez Calabozo"/>
+		
+	</head>
+	
+	<tiles:insertAttribute name="header" ignore="true" />	
+  	<body class="tundra spring">
+   		<div id="simple">		    	   
+		    <div id="main">
+	    		<tiles:insertAttribute name="body"/> 
+		    </div>
+		</div>
+	</body>
+</html>

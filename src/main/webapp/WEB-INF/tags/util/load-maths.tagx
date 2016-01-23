@@ -1,0 +1,27 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+
+
+<![CDATA[       
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+    tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+  });
+</script>
+]]>
+	
+<style>
+  .MathJax_Display { display: inline; }
+  #content .MathJax img {border: 0}
+</style>
+
+<spring:url value="/resources/js/mathjax/MathJax.js" var="math_url" />	
+    
+<script type="text/javascript" src="${math_url }">
+
+<!-- -->
+</script>
+
+
+</jsp:root>

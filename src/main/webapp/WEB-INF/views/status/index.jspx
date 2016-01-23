@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  <jsp:output omit-xml-declaration="yes"/>
+  <spring:message code="label_status_index" htmlEscape="false" var="title"/>
+  
+  <spring:url value="/resources/images/ok.png" var="okimg"/>
+  <spring:url value="/resources/images/nok.png" var="nokimg"/>
+  
+  <util:panel id="title" title="${title}">
+    <spring:message code="application_name" htmlEscape="false" var="app_name"/>
+    <h3>
+      <spring:message arguments="${app_name}" code="welcome_titlepane"/>
+    </h3>
+    <table class="status">
+    <tr><td><spring:message code="status_os"/></td><td> ${osSystem}</td>  </tr>
+    <tr><td><spring:message code="status_mem"/></td><td> ${memLoad} %</td>   </tr> 
+    <tr><td><spring:message code="status_uptime"/></td><td> ${uptime} days</td>  </tr>       
+    <tr><td><spring:message code="status_basedir"/></td><td> ${baseDir}</td>  </tr>
+    <tr><td><spring:message code="status_userdir"/></td><td> ${userDir}</td>  </tr>
+    
+    <tr><td><spring:message code="status_log"/></td><td> 
+    <c:forEach var="logDir" items="${logDirs}">
+    		<span>${logDir}</span>
+    </c:forEach>
+    </td>  </tr>
+    
+    <tr><td><spring:message code="status_num_threads"/></td><td> ${numThreads}</td>  </tr>
+    
+        
+    <tr><td><spring:message code="status_database"/></td>
+    <td>
+	    <c:choose>
+		    <c:when test="${dbstatus=='OK'}">
+		    	<img alt="OK" class="oknokimg" src="${okimg}"/>
+		    </c:when>
+		    <c:otherwise>
+		    	<img alt="NOK" class="oknokimg" src="${nokimg}"/>		    	
+		    </c:otherwise>    		    
+	    </c:choose>        
+	    <span>${dbstatus}</span>
+    </td>
+    </tr>
+    <tr><td><spring:message code="status_dbsize"/></td><td> ${dbSizeMB} MBytes</td>  </tr>
+    <tr><td><spring:message code="status_exps"/></td><td> ${numMatrix}</td>   </tr>
+        
+    <tr><td><spring:message code="status_aptdir"/></td>
+	    <td> 
+	    <c:choose>
+		    <c:when test="${apttoolsExists}">
+		    	<img alt="OK" class="oknokimg" src="${okimg}"/>
+		    </c:when>
+		    <c:otherwise>
+		    	<img alt="NOK" class="oknokimg" src="${nokimg}"/>
+		    </c:otherwise>    
+	    </c:choose>    
+	    <span>${apttoolsDir}</span>
+	    </td>   
+    </tr>    
+    <tr><td><spring:message code="status_tmpdir"/></td>
+	    <td>
+	    <c:choose>
+		    <c:when test="${tmpDirExists}">
+		    	<img alt="OK" class="oknokimg" src="${okimg}"/>
+		    	<span>${tmpDirSize}MBytes&#160;&#160;</span>
+		    	<a class="cssbutton cssbuttonsmall posright" href="clean">Clean</a>
+		    	&#160;&#160;
+		    </c:when>
+		    <c:otherwise>
+		    	<img alt="NOK" class="oknokimg" src="${nokimg}"/>
+		    </c:otherwise>    
+	    </c:choose>    
+	    <span>${tmpDir}</span>
+	    </td>    
+    </tr>
+    
+    <tr><td><spring:message code="status_cdfdir"/></td><td> ${cdfFilesDir}</td>   </tr>
+    <tr><td><spring:message code="status_cdffiles"/></td>
+    <td> 
+    	<c:forEach var="cdffile" items="${cdfFilesName}">
+    		<span>${cdffile}&#160;&#160;&#160;&#160;</span>
+    	</c:forEach>
+    	<c:if test='${fn:length(cdfFilesName)==0}'>
+    		<img alt="NOK" class="oknokimg" src="${nokimg}"/>
+    	</c:if>
+    </td>   
+    
+    </tr>
+    
+    <tr><td><spring:message code="status_geneinfo"/></td>
+    <td>
+    
+    	<c:forEach var="i" begin="0" end="${fn:length(geneInfoFileExists)-1}">
+                    
+                
+    
+    	<c:choose>
+		    <c:when test="${geneInfoFileExists[i]}">
+		    	<img alt="OK" class="oknokimg" src="${okimg}"/>
+		    </c:when>
+		    <c:otherwise>
+		    	<img alt="NOK" class="oknokimg" src="${nokimg}"/>
+		    </c:otherwise>    
+	    </c:choose>    
+    	<span>${geneInfoFile[i]}</span>
+    	<br/>
+    	</c:forEach>
+    	
+    </td>
+    </tr>
+    
+    
+    </table>
+  </util:panel>
+  
+  <script type="text/JavaScript">
+  
+	function timedRefresh(timeoutPeriod) {
+		setTimeout("location.reload(true);",timeoutPeriod);
+	}
+	timedRefresh(5000);
+ </script>
+
+</div>

@@ -1,0 +1,9 @@
+*.class
+*.war
+*.jar
+*.tmp
+*.aj
+*.pyc
+target/*
+log.roo
+db_dump.sql

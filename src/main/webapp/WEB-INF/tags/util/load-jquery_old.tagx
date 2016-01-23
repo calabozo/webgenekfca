@@ -1,0 +1,7 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+
+	<spring:url value="/resources/js/jquery/jquery.js" var="jquery_url" />	
+    <spring:url value="/resources/js/jquery/jquery.progressbar.js" var="progressbar_url" />    
+    <script src="${jquery_url}" language="javascript" type="text/javascript" ><!-- required for FF3 and Opera --></script>    
+    <script src="${progressbar_url}" language="javascript" type="text/javascript" ><!-- required for FF3 and Opera --></script>
+</jsp:root>

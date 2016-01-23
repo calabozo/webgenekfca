@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" style="width:500px;margin:0 auto;" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <util:load-jquery/>
+    <spring:url value="/resources/dijit/themes/tundra/images/tabClose.png" var="closeImg"/>
+    <spring:url value="/resources/images/question_24.png" var="helpImg"/>
+    <div id="div_detailed_info" style="display:none;width:100%;height:100%;top:0px;left:0px;position:absolute;background-color:rgba(0, 0, 0, 0.9);z-index:256;" onclick="$('#div_detailed_info').hide();" >
+		<div id="gene_detailed_div" style="width:80%;top:100px;left:100px;position: absolute;-webkit-border-radius: 15px;-moz-border-radius: 15px;border-radius: 15px;background-color:#FFF;">				
+			<div id="close_div" style="float: right;cursor: pointer;margin-right: 4px;" onclick="$('#div_detailed_info').hide();" >			
+			<img src="${closeImg}"/>
+			</div>
+		<div style="margin:2em;">
+		
+		<c:if test="${cookie.mode.value!='kfca'}">
+			The data can be uploaded in three different formats, as a plain text single file, as multiple Affymetrix <a href="http://media.affymetrix.com/support/developer/powertools/changelog/gcos-agcc/cel.html">CEL</a> files celfile or as several RNASeq count files.
+			<br/>
+			<br/>
+		If the input is a text file it must contain a matrix where each row provides the expression level of a probeset or gene for the different microarray experiments given by the columns. The name given to each microarray appears in the first row and the probeset identifier is defined in the first column. The matrix elements can be separated by colons, whitespaces or tabs. All the numerical values of the matrix must be greater than 0.
+			<br/>
+			This is an example of how this file can be:			
+			<br/>
+<div style="font-size: 12px;">			
+probeset_id GSM237280.CEL GSM237281.CEL GSM237282.CEL GSM237283.CEL GSM237292.CEL GSM237293.CEL<br/>
+AFFX-BioB-5_at 6.21748 6.53477 6.48317 6.67481 6.91188 7.48092<br/>
+267635_at 5.15393 5.63164 4.71580 4.70132 11.50649 11.44930<br/>
+267636_at 5.68781 5.68581 5.76212 6.02355 4.94718 4.98683<br/>
+267637_at 5.48461 5.73925 5.05556 5.23711 7.88323 7.79586<br/>
+267638_at 11.14841 11.22884 10.98424 11.15564 10.28154 9.50450<br/>
+267639_at 5.30350 5.39103 5.30213 5.12020 6.06951 6.39009 6.32549 6.18102<br/>
+267640_at 8.23864 8.16074 8.10782 8.08963 8.50680 8.70269 8.51353 8.50819<br/>
+</div>
+			<br/>
+			<br/>
+Another alternative is to upload the data from each microarray in a CEL file which gives the intensity and variance value for each probe in the Affymetrix microarray chip.  
+Once all the CEL files have been uploaded the <a href="http://media.affymetrix.com/support/developer/powertools/changelog/apt-probeset-summarize.html">apt-probeset-summarize</a> command is executed in the server with the  robust multi-array analysis (RMA) algorithm which performs some noise reducing and normalization tasks to give an accurate value of the probeset expression level.
+
+			<br/>
+			<br/>
+If the data comes from a RNASeq analysis then the files must have two columns, the first one with the gene name and the second one with the number of counts for that gene.
+		</c:if>
+		<c:if test="${cookie.mode.value=='kfca'}">
+		The input must be a text file which contains a matrix. The name given to each column appears in the first row and the row identifier is defined in the first column. The matrix elements can be separated by colons, whitespaces or tabs.
+			<br/>
+			This is an example of how this file can be:			
+			<br/>
+<div style="font-size: 12px;">			
+ColA ColB ColC ColD ColE ColF<br/>
+row1 6.21748 6.53477 6.48317 6.67481 6.91188 7.48092<br/>
+row2 5.15393 5.63164 4.71580 4.70132 11.50649 11.44930<br/>
+row3 5.68781 5.68581 5.76212 6.02355 4.94718 4.98683<br/>
+row4 5.48461 5.73925 5.05556 5.23711 7.88323 7.79586<br/>
+row5 11.14841 11.22884 10.98424 11.15564 10.28154 9.50450<br/>
+row6 5.30350 5.39103 5.30213 5.12020 6.06951 6.39009<br/>
+row7 8.23864 8.16074 8.10782 8.08963 8.50680 8.70269<br/>
+</div>
+			<br/>
+		</c:if>
+		</div>
+		</div>
+</div>
+    
+    <form:create id="fc_es_uc3m_tsc_gene_DataMatrix" modelAttribute="dataMatrix" multipart="true" path="/datamatrices" render="${empty dependencies}" z="user-managed">
+    <c:if test="${cookie.mode.value!='kfca'}">
+    <p>
+    You can upload your gene expression experiments.<br/>
+    Two input modes exist:
+    <ul>
+    <li>
+     Several <a href="http://www.affymetrix.com/support/developer/powertools/changelog/gcos-agcc/cel.html">Affymetrix CEL</a> files.
+     </li>
+     <li>
+     A gene expression file in the format given by the Affymetrix <a href="http://www.affymetrix.com/support/developer/powertools/changelog/apt-probeset-summarize.html">apt-probeset-summarize</a>.
+     </li>
+     <li>
+     Several count read files obttained with <a href="http://www-huber.embl.de/users/anders/HTSeq/doc/count.html">htseq-count</a> or a equivalent program.
+     </li>
+    </ul>
+    Please provide a name to identify this dataset, write a short description and indicate the proper data input mode used in the experiment. It can be an Affymetrix microarray or the count reads files for a RNASeq analysis. 
+    </p>
+    </c:if>
+    <c:if test="${cookie.mode.value=='kfca'}">
+    <p>
+    You can upload your matrix.<br/>
+    This matrix can be a CSV file with ; or whitespace as colon separators. Headers for the column and row names also can be present.<br/>
+    In the preprocessor phase a logarithm is applied to the matrix so all its values <b>must be greater than 0</b>, otherwise an invalid file error will be prompt.<br/>
+         
+    Please provide a name to identify this dataset and write a short description.
+    </p>
+    </c:if>
+        <field:input field="name" id="c_es_uc3m_tsc_gene_DataMatrix_name" required="true" z="HNQ8m32b1KO2N9mI1qGGHmOL8LQ="/>
+        <field:textarea field="description" id="c_es_uc3m_tsc_gene_DataMatrix_description" z="BLQ+n7q02tl5YH3oX37PbCSWuJ8="/>
+        <field:input field="rowNames" id="c_es_uc3m_tsc_gene_DataMatrix_rowNames" render="false" z="user-managed"/>
+        <field:textarea field="rawData" id="c_es_uc3m_tsc_gene_DataMatrix_rawData" render="false" z="user-managed"/>
+        <field:select field="preprocessor" id="c_es_uc3m_tsc_gene_DataMatrix_preprocessor" itemValue="id" items="${preprocessors}" multiple="true" path="/preprocessors" render="false" z="user-managed"/>
+        <field:input field="minValue" id="c_es_uc3m_tsc_gene_DataMatrix_minValue" render="false" validationMessageCode="field_invalid_number" z="user-managed"/>
+        <field:input field="maxValue" id="c_es_uc3m_tsc_gene_DataMatrix_maxValue" render="false" validationMessageCode="field_invalid_number" z="user-managed"/>
+        
+        <div id="dim_div" style="font-size:75%">Dimensions: xxxx</div>
+        
+        <c:if test="${cookie.mode.value!='kfca'}">
+        	<field:select field="microArrayType" id="c_es_uc3m_tsc_gene_DataMatrix_microArrayType" items="${microarrayenums}" path="microarrayenums" itemLabel="labelName" z="user-managed"/>
+        </c:if>
+        
+        
+        <field:input field="processFiles" id="c_es_uc3m_tsc_gene_DataMatrix_processFiles" render="false" z="user-managed"/>
+        
+		
+        <div id="file-uploader">
+            <!-- or put a simple form for upload here -->           
+        </div>        
+        <div style="cursor: pointer;position:relative;top:-1.2em;left:7.5em;" onclick="$('#div_detailed_info').show(1000);" >			
+			<img style="width:12px;height:12px;" src="${helpImg}"/>
+			</div>      
+			
+        <div style="visibility:hidden;height:100px">
+            <field:input field="colNames" id="c_es_uc3m_tsc_gene_DataMatrix_colNames" render="true" z="user-managed"/>
+            <field:input field="celIDFiles" id="c_es_uc3m_tsc_gene_DataMatrix_celIDFiles" z="user-managed"/>
+            <c:if test="${cookie.mode.value=='kfca'}">        	
+        		<field:input field="microArrayType" id="c_es_uc3m_tsc_gene_DataMatrix_celIDFiles" render="true" label="-1" z="user-managed" />        		
+        	</c:if>
+        </div>
+        
+    </form:create>
+    
+
+    <form:dependency dependencies="${dependencies}" id="d_es_uc3m_tsc_gene_DataMatrix" render="${not empty dependencies}" z="H/Px1EuMed+lCwIJhy14yj8le40="/>
+    <util:load-fileuploader/>
+    <spring:url value="/datamatrices/fileuploader/" var="fileupload_url"/>
+    <script type="text/javascript">
+    
+//<![CDATA[    
+    var id;    
+    $(document).ready(function() {
+    	$('#dim_div').hide();
+    	$('#proceed').hide();
+    	id=new Date().getTime()+"X"+Math.floor(Math.random()*1000);    	
+       	createUploader("file-uploader","${fileupload_url}"+id);
+       	$('#_celIDFiles_id').val(id);       	
+       	
+    });
+    
+    function change_uploaded_file(elem){
+    	var files_success=$('.qq-upload-success');
+    	    	
+    	var col_names=files_success[0].childNodes[0].value;
+    	var i=1;
+    	for (;i<files_success.length;i++){
+    		col_names+=","+files_success[i].childNodes[0].value;
+    	}
+    	$('#_colNames_id').val(col_names);    	    	
+    }
+    function file_submmited(){
+    	var files=$('.qq-upload-file');
+    	if (files.length>1){
+    		$('#proceed').show();
+    	}else{
+    		$('#proceed').hide();
+    	}
+    }
+    function external_cancel(file_name){  
+    	file_submmited();
+    	setTimeout("change_uploaded_file();",100);
+    }
+    function upload_status(v){
+    	var files=$('.qq-upload-file');
+    	var s=0;
+    	//$('.qq-upload-button').find('input').attr("disabled", "disabled");
+    	if (v!=null){
+	    	var i=0;    	
+	    	for (i=0;i<v.length;i++){
+	    		if (v[i]!=null){
+	    			s=1;
+	    			break;		
+	    		};
+	    	};
+    	};
+    	if (s==0 && files.length>0){
+    		$('#proceed').show();
+    		change_uploaded_file();
+    	}else{
+    		$('#proceed').hide();
+    	}
+    	
+    }
+    
+    function external_onComplete(jsonResult){
+    	if (jsonResult.filetype=="TABLE"){    		
+    		$('.qq-upload-list li:not(:last)').remove();
+    		$('#dim_div').text("Dimensions: "+jsonResult.rows+"x"+jsonResult.cols);
+    		$('#dim_div').show();
+    	}else if (jsonResult.filetype=="COUNT"){    		    		
+    		$('#dim_div').text("Genes: "+jsonResult.rows);
+    		$('#dim_div').show();
+    	}
+    	
+    }
+    
+ // ]]></script>
+</div>

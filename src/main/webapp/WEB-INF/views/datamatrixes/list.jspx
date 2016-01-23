@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <!--  <page:list id="pl_es_uc3m_tsc_gene_DataMatrix" items="${datamatrixes}" z="user-managed">-->
+    
+     <c:if test="${cookie.mode.value!='kfca'}">  
+	    <div id="normal">
+	        <h2>Datasets list</h2>
+	        <p>
+	    These are datasets, gene expressions from Affymetrix microarrays, previously uploaded by a logged user. 
+	    	</p>
+	    	<p>
+	    Click on <em>Details</em> to see aditional information about the selected dataset. <br/>
+	    From there you can explore the Gene Expression among the different data preprocessing.  
+	    	</p>
+	        <table:table_genedatamatrix data="${datamatrixes}" id="l_es_uc3m_tsc_gene_DataMatrix" path="/datamatrices">
+	            <!-- XXX -->
+	            <table:column id="c_es_uc3m_tsc_gene_DataMatrix_name" property="name" z="WM0As3QNVmnkh5h7yKYYZca4XnY="/>
+	            <table:column id="c_es_uc3m_tsc_gene_DataMatrix_description" property="description" z="YudOpqzAtZvMKirFRVcdcjgSj5k="/>
+	            <table:column id="c_es_uc3m_tsc_gene_DataMatrix_colNames" property="colNames" z="ogQ0QWLMjEcQQ+sBTpZnzDLruh0="/>
+	            <table:column id="c_es_uc3m_tsc_gene_DataMatrix_rowNames" property="rowNames" z="Xa+OcJi5LII/wz2DuNAo2Z4JTq0="/>
+	            <table:column id="c_es_uc3m_tsc_gene_DataMatrix_rawData" property="rawData" z="axZuStrtDErZKaX+DyCXLI7uP4A="/>
+	        </table:table_genedatamatrix>
+	    </div>
+    </c:if>
+    
+    <c:if test="${cookie.mode.value=='kfca'}">  
+	    <div id="normal">
+	        <h2>Datasets list</h2>
+	        <p>
+	    These are datasets, matrix data, previously uploaded by a logged user. 
+	    	</p>
+	    	<p>
+	    Click on <em>Details</em> to see aditional information about the selected dataset. <br/>
+	    From there you can explore the matrices among the different data preprocessing.  
+	    	</p>
+	        <table:table_datamatrix data="${datamatrixes}" id="l_es_uc3m_tsc_gene_DataMatrix" path="/datamatrices">
+	            <!-- XXX -->
+	            <table:column id="c_es_uc3m_tsc_gene_DataMatrix_name" property="name" z="user-managed"/>
+	            <table:column id="c_es_uc3m_tsc_gene_DataMatrix_description" property="description" z="user-managed"/>
+	            <table:column id="c_es_uc3m_tsc_gene_DataMatrix_colNames" property="colNames" z="user-managed"/>
+	            <table:column id="c_es_uc3m_tsc_gene_DataMatrix_rowNames" property="rowNames" z="user-managed"/>
+	            <table:column id="c_es_uc3m_tsc_gene_DataMatrix_rawData" property="rawData" z="user-managed"/>
+	        </table:table_datamatrix>
+	    </div>
+    </c:if>
+    
+    
+    <!-- </page:list>-->
+    <page:list id="pl_es_uc3m_tsc_gene_DataMatrix" items="${datamatrixes}" z="user-managed" render="false"/>
+</div>
