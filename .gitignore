@@ -2,7 +2,6 @@
 *.war
 *.jar
 *.tmp
-*.aj
 *.pyc
 target/*
 log.roo

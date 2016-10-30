@@ -4,7 +4,7 @@
     <groupId>es.uc3m.tsc</groupId>
     <artifactId>GeneAnalyzer</artifactId>
     <packaging>war</packaging>
-    <version>0.1.0.BUILD-SNAPSHOT</version>
+    <version>1.0</version>
     <name>GeneAnalyzer</name>
     <properties>
         <aspectj.version>1.6.12.M2</aspectj.version>
