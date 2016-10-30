@@ -9,27 +9,36 @@ The genes are grouped based on the concepts obtained from a K-Formal Concept Ana
 ##Requirements:
 
 -Java Development Kit 1.7.x or higher
+
 -Sprint Roo 1.2.5 or higher: http://projects.spring.io/spring-roo/
+
 -Mysql server 5.5
+
 -Apache Tomcat 7.x or higher
 
 ##Database preparation
 
 1- Edit the file src/main/resources/META-INF/spring/database.properties
+
    a) Define the host where the mysql server is installed and the db name:
       database.url=jdbc\:mysql\://localhost\:3306/databasename
+
    b) Define the username:
       database.username=username
+
    c) Define the password:
       database.password=password
 
 2- Enter in mysql and create the database:
+
 mysql> create database databasename;
 
 3- Create the user:
+
 mysql> create user 'username' identified by 'password';
 
 4- Grant priviledges:
+
 mysql> grant all privileges on databasename.* to 'username';
 
 5- Fill database with gene info:
@@ -43,6 +52,7 @@ mysql> grant all privileges on databasename.* to 'username';
 ##Install Affymetrix Tools
 
 The Affymetrix tools are needed to upload .CEL files into the web application.
+
 1- Download the last version of Affymetrix Tools
 http://www.affymetrix.com/estore/partners_programs/programs/developer/tools/powertools.affx#1_2
 

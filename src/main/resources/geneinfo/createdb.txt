@@ -1,13 +1,13 @@
 Create database:
-mysql> create database jmgc_tesis;
+mysql> create database webgenekfca;
 
 Create user:
-mysql> create user 'jmgc' identified by '679r6dwXNWXC8jVP';
+mysql> create user 'gene' identified by 'genep';
 
 Grant priviledges:
 mysql> grant all privileges on jmgc_tesis.* to 'jmgc';
 
 Populate the database:
 $ python populate_genedescription.py . > db_dump.sql
-$ mysql -ujmgc -p679r6dwXNWXC8jVP jmgc_tesis < db_dump.sql
+$ mysql -ugene -pgenep webgenekfca < db_dump.sql
 

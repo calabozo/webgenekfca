@@ -1,7 +1,7 @@
 # mysql < createdb.sql
 
-create database geneanalyzer;
+create database webgenekfca;
 create user 'gene'@'localhost' identified by 'genep';
-grant all on geneanalyzer.* to gene;
+grant all on webgenekfca.* to gene;
 flush privileges;
 
