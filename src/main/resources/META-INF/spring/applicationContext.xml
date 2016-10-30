@@ -82,8 +82,8 @@
      
     <bean class="es.uc3m.tsc.file.ProcessUploadedFiles" id="processCELFiles">
         <constructor-arg value="/tmp" />
-        <constructor-arg value="/opt/affimetrix/bin" />
-        <constructor-arg value="/home/jose/thesis/workspace/GeneAnalyzer/src/main/resources/cdf" />
+        <constructor-arg value="/opt/affymetrix/bin" />
+        <constructor-arg value="/opt/webgenekfca/src/main/resources/cdf" />
     </bean>
     
     
