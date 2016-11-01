@@ -23,6 +23,9 @@ RUN killall java; exit 0
 RUN wget -P /opt/affymetrix http://media.affymetrix.com/Download/updates/APT_1.19.0_Linux_64_bit_x86_binaries.zip; unzip /opt/affymetrix/APT_1.19.0_Linux_64_bit_x86_binaries.zip; mv apt-1.19.0-x86_64-intel-linux/* /opt/affymetrix; rm /opt/affymetrix/APT_1.19.0_Linux_64_bit_x86_binaries.zip
 RUN chmod +x /opt/affymetrix/bin/*
 
+#Gives more memory to Tomcat
+RUN sed -i "s/-Xmx128m/-Xmx2048m/" /etc/default/tomcat7
+
 #Start daemons
 EXPOSE 8080
 CMD /etc/init.d/mysql start; /etc/init.d/tomcat7 start; sleep infinity; 
