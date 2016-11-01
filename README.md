@@ -7,7 +7,7 @@ The genes are grouped based on the concepts obtained from a K-Formal Concept Ana
 
 To install you only need docker
 ```
-docker run -d -p 8070:8080 calabozo/webgenekfca
+docker run -d -p 8080:8080 calabozo/webgenekfca
 ```
 The web will be available at: http://localhost:8080/webgenekfca
 
