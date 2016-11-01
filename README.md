@@ -20,7 +20,7 @@ Several count read files obttained with htseq-count or a equivalent program.
 * A gene expression file in the format given by the Affymetrix apt-probeset-summarize.
 Several count read files obttained with htseq-count or a equivalent program.
 
-You can start downloading the CEL files from:
+You can start by downloading the CEL files from:
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE9311
 
 For development read the document README.txt
