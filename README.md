@@ -14,10 +14,10 @@ The web will be available at: http://localhost:8080/webgenekfca
 To upload data you must login. The default user/password is admin/admin1.
 
 The file format can be:
--Several Affymetrix CEL files.
--A gene expression file in the format given by the Affymetrix apt-probeset-summarize.
+* Several Affymetrix CEL files.  
+* A gene expression file in the format given by the Affymetrix apt-probeset-summarize.
 Several count read files obttained with htseq-count or a equivalent program.
--A gene expression file in the format given by the Affymetrix apt-probeset-summarize.
+* A gene expression file in the format given by the Affymetrix apt-probeset-summarize.
 Several count read files obttained with htseq-count or a equivalent program.
 
 You can start downloading the CEL files from:
