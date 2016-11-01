@@ -46,9 +46,9 @@ docker exec -t webgenekfca tail -F /var/log/tomcat7/webgenekfca.log
 
 If you want to deploy a new .war you just have to mount the remote dir */var/lib/tomcat7/webapps* into the folder where you would leave the .war file:
 ```
-docker run --name webgenekfca -v <host_directory>:/var/lib/tomcat7/webapps  -d calabozo/webgenekfca
+docker run --name webgenekfca -v <host_directory>:/var/lib/tomcat7/webapps -d -p 8080:8080 calabozo/webgenekfca
 ```
-If you want to enter the shell of the container execute:
+If you want to enter into the shell of the container execute:
 ```
 docker exec -t -i webgenekfca /bin/bash
 ```
