@@ -1,4 +1,5 @@
 FROM openjdk:7
+MAINTAINER melopsitaco@gmail.com
 
 #Install packages and mysql
 RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get install -yq mysql-server maven2 tomcat7
@@ -20,7 +21,7 @@ RUN killall java; exit 0
 
 #Downloads Affymetrix tools from the web
 RUN wget -P /opt/affymetrix http://media.affymetrix.com/Download/updates/APT_1.19.0_Linux_64_bit_x86_binaries.zip; unzip /opt/affymetrix/APT_1.19.0_Linux_64_bit_x86_binaries.zip; mv apt-1.19.0-x86_64-intel-linux/* /opt/affymetrix; rm /opt/affymetrix/APT_1.19.0_Linux_64_bit_x86_binaries.zip
-
+RUN chmod +x /opt/affymetrix/bin/*
 
 #Start daemons
 EXPOSE 8080
